@@ -62,6 +62,7 @@ add_action( 'init', 'cdb_registrar_cpt_empleado' );
  */
 function cdb_empleado_activar() {
     cdb_registrar_cpt_empleado();
+    cdb_empleado_registrar_rol();
     flush_rewrite_rules();
 }
 register_activation_hook( __FILE__, 'cdb_empleado_activar' );
@@ -70,12 +71,75 @@ register_activation_hook( __FILE__, 'cdb_empleado_activar' );
  * Desactivación del plugin - Limpiar reglas de reescritura.
  */
 function cdb_empleado_desactivar() {
+    cdb_empleado_eliminar_rol();
     flush_rewrite_rules();
 }
 register_deactivation_hook( __FILE__, 'cdb_empleado_desactivar' );
 
-// Se requiere el archivo con los metacampos para “Empleado”
+// Incluir metacampos básicos del empleado
 require_once plugin_dir_path(__FILE__) . 'inc/metacampos-empleado.php';
+// Gestión de roles y capacidades específicos
+require_once plugin_dir_path(__FILE__) . 'inc/roles-capacidades.php';
+
+/**
+ * Agregar la metabox de Equipo y Año en el CPT Empleado.
+ */
+function cdb_empleado_registrar_meta_box() {
+    add_meta_box(
+        'cdb_empleado_equipo_year',
+        __('Equipo y Año', 'cdb-empleado'),
+        'cdb_empleado_meta_box_callback',
+        'empleado',
+        'side'
+    );
+}
+add_action('add_meta_boxes', 'cdb_empleado_registrar_meta_box');
+
+/**
+ * Encolar el script de la metabox y pasar los datos de equipos.
+ */
+function cdb_empleado_admin_assets($hook) {
+    global $post_type;
+    if ('post.php' !== $hook && 'post-new.php' !== $hook) {
+        return;
+    }
+    if ('empleado' !== $post_type) {
+        return;
+    }
+
+    $equipos = get_posts(array(
+        'post_type'      => 'equipo',
+        'posts_per_page' => -1,
+        'post_status'    => 'publish',
+        'meta_key'       => '_cdb_equipo_year',
+        'orderby'        => 'meta_value_num',
+        'order'          => 'DESC',
+    ));
+
+    wp_enqueue_script(
+        'cdb-empleado-metabox',
+        plugin_dir_url(__FILE__) . 'assets/js/equipo-year.js',
+        array(),
+        '1.0.0',
+        true
+    );
+
+    wp_localize_script(
+        'cdb-empleado-metabox',
+        'cdbEmpleadoEquiposData',
+        wp_json_encode($equipos)
+    );
+
+    wp_localize_script(
+        'cdb-empleado-metabox',
+        'cdbEmpleadoTexts',
+        array(
+            'select_team' => __('Seleccionar un Equipo', 'cdb-empleado')
+        )
+    );
+}
+add_action('admin_enqueue_scripts', 'cdb_empleado_admin_assets');
+
 
 /**
  * Render de la Metabox para asignar Equipo y Año.
@@ -94,9 +158,9 @@ function cdb_empleado_meta_box_callback($post) {
         'order'          => 'DESC'
     ));
 
-    echo '<label for="cdb_empleado_year">' . __('Seleccionar Año:', 'cdb-bar') . '</label>';
+    echo '<label for="cdb_empleado_year">' . __('Seleccionar Año:', 'cdb-empleado') . '</label>';
     echo '<select name="cdb_empleado_year" id="cdb_empleado_year">';
-    echo '<option value="">' . __('Seleccionar un Año', 'cdb-bar') . '</option>';
+    echo '<option value="">' . __('Seleccionar un Año', 'cdb-empleado') . '</option>';
 
     // Obtener años únicos de los equipos
     $years = [];
@@ -109,9 +173,9 @@ function cdb_empleado_meta_box_callback($post) {
     }
     echo '</select><br><br>';
 
-    echo '<label for="cdb_empleado_equipo">' . __('Seleccionar un Equipo:', 'cdb-bar') . '</label>';
+    echo '<label for="cdb_empleado_equipo">' . __('Seleccionar un Equipo:', 'cdb-empleado') . '</label>';
     echo '<select name="cdb_empleado_equipo" id="cdb_empleado_equipo">';
-    echo '<option value="">' . __('Seleccionar un Equipo', 'cdb-bar') . '</option>';
+    echo '<option value="">' . __('Seleccionar un Equipo', 'cdb-empleado') . '</option>';
 
     // Mostrar equipos solo del año seleccionado
     foreach ($equipos as $equipo) {
@@ -121,34 +185,29 @@ function cdb_empleado_meta_box_callback($post) {
         }
     }
     echo '</select>';
-
-    // JavaScript para actualizar equipos según el año seleccionado
-    echo '<script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var yearSelect = document.getElementById("cdb_empleado_year");
-            var equipoSelect = document.getElementById("cdb_empleado_equipo");
-            var equiposData = ' . json_encode($equipos) . ';
-
-            function updateEquipos() {
-                var selectedYear = yearSelect.value;
-                equipoSelect.innerHTML = "<option value=\'\'>Seleccionar un Equipo</option>";
-
-                for (var i = 0; i < equiposData.length; i++) {
-                    var equipo = equiposData[i];
-                    if (equipo.meta["_cdb_equipo_year"] == selectedYear) {
-                        var option = document.createElement("option");
-                        option.value = equipo.ID;
-                        option.textContent = equipo.post_title;
-                        equipoSelect.appendChild(option);
-                    }
-                }
-            }
-
-            yearSelect.addEventListener("change", updateEquipos);
-            updateEquipos(); // Inicializa la lista al cargar
-        });
-    </script>';
 }
+
+/**
+ * Guardar los valores de Equipo y Año del empleado.
+ */
+function cdb_empleado_guardar_equipo_year($post_id) {
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    if (isset($_POST['cdb_empleado_year'])) {
+        update_post_meta($post_id, '_cdb_empleado_year', sanitize_text_field($_POST['cdb_empleado_year']));
+    }
+
+    if (isset($_POST['cdb_empleado_equipo'])) {
+        update_post_meta($post_id, '_cdb_empleado_equipo', intval($_POST['cdb_empleado_equipo']));
+    }
+}
+add_action('save_post_empleado', 'cdb_empleado_guardar_equipo_year');
 
 // Mantén cualquier lógica adicional sobre permisos en archivo separado.
 require_once plugin_dir_path(__FILE__) . 'inc/permisos.php';
