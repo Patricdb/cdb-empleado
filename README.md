@@ -21,3 +21,7 @@ El plugin registra el rol personalizado `empleado` y varias funciones auxiliares
 ### 1.0.1
 
 - Se añadió verificación de nonce y comprobación de capacidades al guardar la metabox "Equipo y Año" para mejorar la seguridad.
+
+### 1.0.2
+
+- Se corrigió el paso de datos de equipos a JavaScript para que se envíen como un array nativo en lugar de una cadena JSON.
