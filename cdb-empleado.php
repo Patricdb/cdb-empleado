@@ -148,6 +148,9 @@ function cdb_empleado_meta_box_callback($post) {
     $selected_equipo = get_post_meta($post->ID, '_cdb_empleado_equipo', true);
     $selected_year   = get_post_meta($post->ID, '_cdb_empleado_year', true);
 
+    // Nonce para verificar la intención al guardar
+    wp_nonce_field('cdb_empleado_equipo_nonce_action', 'cdb_empleado_equipo_nonce');
+
     // Obtener todos los equipos disponibles
     $equipos = get_posts(array(
         'post_type'      => 'equipo',
@@ -191,6 +194,11 @@ function cdb_empleado_meta_box_callback($post) {
  * Guardar los valores de Equipo y Año del empleado.
  */
 function cdb_empleado_guardar_equipo_year($post_id) {
+    if (!isset($_POST['cdb_empleado_equipo_nonce']) ||
+        !wp_verify_nonce($_POST['cdb_empleado_equipo_nonce'], 'cdb_empleado_equipo_nonce_action')) {
+        return;
+    }
+
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
         return;
     }

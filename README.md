@@ -15,3 +15,9 @@ Plugin de WordPress para gestionar un Custom Post Type de empleados y mostrar su
 ## Desarrollo
 
 El plugin registra el rol personalizado `empleado` y varias funciones auxiliares. Consulta el código fuente para más detalles.
+
+## Changelog
+
+### 1.0.1
+
+- Se añadió verificación de nonce y comprobación de capacidades al guardar la metabox "Equipo y Año" para mejorar la seguridad.
