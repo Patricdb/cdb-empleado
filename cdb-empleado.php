@@ -127,7 +127,7 @@ function cdb_empleado_admin_assets($hook) {
     wp_localize_script(
         'cdb-empleado-metabox',
         'cdbEmpleadoEquiposData',
-        wp_json_encode($equipos)
+        $equipos
     );
 
     wp_localize_script(
