@@ -129,12 +129,32 @@ function cdb_equipos_del_empleado_registrar_shortcode() {
 }
 add_action('init', 'cdb_equipos_del_empleado_registrar_shortcode');
 
-// Inyectar el shortcode automáticamente en single-empleado
+// Inyectar automáticamente la gráfica y el listado de equipos en single-empleado
 function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
-    if (is_singular('empleado') && in_the_loop() && is_main_query()) {
-        $shortcode_output = do_shortcode('[equipos_del_empleado]');
-        $content .= $shortcode_output;
+    $empleado_id = get_queried_object_id();
+    if (get_post_type($empleado_id) !== 'empleado' || !in_the_loop() || !is_main_query()) {
+        return $content;
     }
-    return $content;
+
+    if (false === apply_filters('cdb_empleado_inyectar_grafica', true, $empleado_id)) {
+        $grafica_block = '';
+    } else {
+        $attrs          = array('id_suffix' => 'content');
+        $grafica_html   = apply_filters('cdb_grafica_empleado_html', '', $empleado_id, $attrs);
+        $grafica_notice = apply_filters('cdb_grafica_empleado_notice', '', $empleado_id);
+
+        $grafica_block = '';
+        if (!empty($grafica_html)) {
+            $grafica_block  = '<div class="cdb-empleado-grafica-wrap">';
+            $grafica_block .= $grafica_html;
+            if (!empty($grafica_notice)) {
+                $grafica_block .= '<div class="cdb-empleado-grafica-notice">' . $grafica_notice . '</div>';
+            }
+            $grafica_block .= '</div>';
+        }
+    }
+
+    $shortcode_output = do_shortcode('[equipos_del_empleado empleado_id="' . $empleado_id . '"]');
+    return $content . $grafica_block . $shortcode_output;
 }
 add_filter('the_content', 'cdb_inyectar_equipos_del_empleado_en_contenido');
