@@ -1,0 +1,5 @@
+.cdb-empleado-grafica-wrap{margin:16px 0 24px}
+.cdb-empleado-grafica-notice{margin-top:10px;font-size:.9rem;color:#666}
+@media(min-width:1024px){
+  .cdb-empleado-grafica-wrap{float:right;max-width:520px;margin-left:24px}
+}

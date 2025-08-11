@@ -140,6 +140,20 @@ function cdb_empleado_admin_assets($hook) {
 }
 add_action('admin_enqueue_scripts', 'cdb_empleado_admin_assets');
 
+/**
+ * Encolar estilos del perfil del empleado en el frontal.
+ */
+add_action('wp_enqueue_scripts', 'cdb_empleado_front_assets');
+function cdb_empleado_front_assets() {
+    if (!is_admin() && is_singular('empleado')) {
+        wp_enqueue_style(
+            'cdb-perfil-empleado',
+            plugins_url('assets/css/perfil-empleado.css', __FILE__),
+            array(),
+            '1.0.0'
+        );
+    }
+}
 
 /**
  * Render de la Metabox para asignar Equipo y Año.
