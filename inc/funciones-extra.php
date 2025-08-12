@@ -136,40 +136,52 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
         return $content;
     }
 
-    if (false === apply_filters('cdb_empleado_inyectar_grafica', true, $empleado_id)) {
-        $grafica_block = '';
-    } else {
-        $attrs          = array('id_suffix' => 'content');
-        $grafica_html   = apply_filters('cdb_grafica_empleado_html', '', $empleado_id, $attrs);
-        $grafica_notice = apply_filters('cdb_grafica_empleado_notice', '', $empleado_id);
+    $is_self = false;
+    if ( function_exists('cdb_obtener_empleado_id') ) {
+        $self_emp = (int) cdb_obtener_empleado_id( get_current_user_id() );
+        $is_self  = ($self_emp === (int) $empleado_id);
+    }
 
-        $grafica_block = '';
-        if (!empty($grafica_html)) {
-            $grafica_block  = '<div class="cdb-empleado-grafica-wrap">';
-            $grafica_block .= $grafica_html;
-            if (!empty($grafica_notice)) {
-                $grafica_block .= '<div class="cdb-empleado-grafica-notice">' . $grafica_notice . '</div>';
-            }
-            $grafica_block .= '</div>';
-        }
+    if (false === apply_filters('cdb_empleado_inyectar_grafica', true, $empleado_id)) {
+        $hero = '';
+    } else {
+        $attrs        = array('id_suffix' => 'content');
+        $grafica_html = apply_filters('cdb_grafica_empleado_html', '', $empleado_id, $attrs);
+
+        $empleado_author = (int) get_post_field('post_author', $empleado_id);
+        $disponible      = ('1' === get_post_meta($empleado_id, 'disponible', true));
+
+        $card_html  = '<div class="cdb-empleado-card">';
+        $card_html .= '<div class="cdb-empleado-card__avatar">' . get_avatar($empleado_author, 96) . '</div>';
+        $card_html .= '<div class="cdb-empleado-card__name">' . esc_html(get_the_title($empleado_id)) . '</div>';
+        $card_html .= '<div class="cdb-pill ' . ($disponible ? 'ok' : 'off') . '">';
+        $card_html .= $disponible ? __('Disponible', 'cdb-empleado') : __('No disponible', 'cdb-empleado');
+        $card_html .= '</div>';
+        $card_html .= '<div class="cdb-empleado-card__total">' . esc_html( apply_filters('cdb_grafica_empleado_total', 0, $empleado_id) ) . '</div>';
+        $card_html .= '</div>';
+
+        $hero  = '<section class="cdb-empleado-hero">';
+        $hero .= $card_html;
+        $hero .= '<div class="cdb-empleado-grafica-wrap">' . $grafica_html . '</div>';
+        $hero .= '</section>';
     }
 
     $calificacion_block = '';
     if ( true === apply_filters('cdb_empleado_inyectar_calificacion', true, $empleado_id) ) {
-        $form_html = apply_filters('cdb_grafica_empleado_form_html', '', $empleado_id, array('id_suffix' => 'content'));
-
-        if ( ! empty($form_html) ) {
-            $calificacion_block = '<div class="cdb-empleado-calificacion-wrap">' . $form_html . '</div>';
+        if ( $is_self ) {
+            $body_html = apply_filters('cdb_grafica_empleado_scores_table_html', '', $empleado_id);
         } else {
-            // Fallback: pedir el aviso y pintarlo si existe
-            $form_notice = apply_filters('cdb_grafica_empleado_notice', '', $empleado_id);
-            if ( ! empty($form_notice) ) {
-                $calificacion_block = '<div class="cdb-empleado-calificacion-wrap">' . $form_notice . '</div>';
-            }
+            $body_html = apply_filters('cdb_grafica_empleado_form_html', '', $empleado_id, array('embed_chart' => false, 'id_suffix' => 'content'));
         }
+
+        if ( empty($body_html) ) {
+            $body_html = apply_filters('cdb_grafica_empleado_notice', '', $empleado_id);
+        }
+
+        $calificacion_block = '<div class="cdb-empleado-calificacion-wrap">' . $body_html . '</div>';
     }
 
     $shortcode_output = do_shortcode('[equipos_del_empleado empleado_id="' . $empleado_id . '"]');
-    return $content . $grafica_block . $calificacion_block . $shortcode_output;
+    return $content . $hero . $calificacion_block . $shortcode_output;
 }
 add_filter('the_content', 'cdb_inyectar_equipos_del_empleado_en_contenido');
