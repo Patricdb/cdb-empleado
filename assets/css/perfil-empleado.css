@@ -32,3 +32,32 @@
 .cdb-empleado-calificacion-wrap table tbody td:first-child {
   text-align: left;
 }
+/* ---- Tabla de calificaciones (centrado robusto) ---- */
+.cdb-empleado-calificacion-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cdb-empleado-calificacion-wrap table thead th:first-child,
+.cdb-empleado-calificacion-wrap table tbody td:first-child {
+  text-align: left !important;       /* Criterio a la izquierda */
+}
+
+.cdb-empleado-calificacion-wrap table thead th:nth-child(2),
+.cdb-empleado-calificacion-wrap table thead th:nth-child(3),
+.cdb-empleado-calificacion-wrap table thead th:nth-child(4),
+.cdb-empleado-calificacion-wrap table tbody td:nth-child(2),
+.cdb-empleado-calificacion-wrap table tbody td:nth-child(3),
+.cdb-empleado-calificacion-wrap table tbody td:nth-child(4) {
+  text-align: center !important;      /* Forzar centrado en valores */
+  vertical-align: middle;
+}
+
+/* (Opcional) Dar algo de aire a la columna de criterios en móvil */
+@media (max-width: 480px){
+  .cdb-empleado-calificacion-wrap table thead th:first-child,
+  .cdb-empleado-calificacion-wrap table tbody td:first-child {
+    padding-right: 8px;
+    white-space: nowrap;
+  }
+}
