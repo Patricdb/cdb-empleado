@@ -154,7 +154,15 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
         }
     }
 
+    $calificacion_block = '';
+    if ( true === apply_filters('cdb_empleado_inyectar_calificacion', true, $empleado_id) ) {
+        $form_html = apply_filters('cdb_grafica_empleado_form_html', '', $empleado_id, array('id_suffix' => 'content'));
+        if ( ! empty($form_html) ) {
+            $calificacion_block = '<div class="cdb-empleado-calificacion-wrap">' . $form_html . '</div>';
+        }
+    }
+
     $shortcode_output = do_shortcode('[equipos_del_empleado empleado_id="' . $empleado_id . '"]');
-    return $content . $grafica_block . $shortcode_output;
+    return $content . $grafica_block . $calificacion_block . $shortcode_output;
 }
 add_filter('the_content', 'cdb_inyectar_equipos_del_empleado_en_contenido');

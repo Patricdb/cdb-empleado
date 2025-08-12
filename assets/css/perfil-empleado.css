@@ -3,3 +3,5 @@
 @media(min-width:1024px){
   .cdb-empleado-grafica-wrap{float:right;max-width:520px;margin-left:24px}
 }
+
+.cdb-empleado-calificacion-wrap{clear:both;margin:24px 0}
