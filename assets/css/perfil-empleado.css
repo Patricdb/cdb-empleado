@@ -1,7 +1,22 @@
-.cdb-empleado-grafica-wrap{margin:16px 0 24px}
-.cdb-empleado-grafica-notice{margin-top:10px;font-size:.9rem;color:#666}
-@media(min-width:1024px){
-  .cdb-empleado-grafica-wrap{float:right;max-width:520px;margin-left:24px}
+/* Layout superior */
+.cdb-empleado-hero{display:grid;grid-template-columns:1fr;gap:16px;margin:12px 0 20px}
+@media (min-width:1024px){
+  .cdb-empleado-hero{grid-template-columns:360px 1fr;align-items:start}
 }
 
+/* Tarjeta */
+.cdb-empleado-card{border-radius:16px;padding:16px;background:linear-gradient(180deg,#f5e8c8,#efe1b4);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.cdb-empleado-card__avatar img{border-radius:9999px;display:block}
+.cdb-empleado-card__name{font-weight:700;font-size:1.25rem;margin-top:8px}
+.cdb-pill{display:inline-block;margin-top:6px;padding:2px 10px;border-radius:9999px;font-size:.85rem}
+.cdb-pill.ok{background:#eaf7ef;color:#1f7a3d}
+.cdb-pill.off{background:#f8eaea;color:#a23434}
+.cdb-empleado-card__total{margin-top:10px;font-weight:600}
+
+/* Gráfica */
+.cdb-empleado-grafica-wrap{margin:0}           /* Quita márgenes y float anteriores */
+.cdb-empleado-grafica-notice{margin-top:10px;font-size:.9rem;color:#666}
+@media (min-width:1024px){ .cdb-empleado-grafica-wrap{margin:0} }
+
+/* Sección inferior */
 .cdb-empleado-calificacion-wrap{clear:both;margin:24px 0}
