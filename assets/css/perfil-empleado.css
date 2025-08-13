@@ -1,7 +1,7 @@
 /* Layout superior */
-.cdb-empleado-hero{display:grid;grid-template-columns:1fr;gap:16px;margin:12px 0 20px}
-@media (min-width:1024px){
-  .cdb-empleado-hero{grid-template-columns:360px 1fr;align-items:start}
+.cdb-empleado-hero{display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:16px;align-items:start;margin:12px 0 20px}
+@media (max-width:1023px){
+  .cdb-empleado-hero{grid-template-columns:1fr}
 }
 
 /* Tarjeta */
@@ -14,12 +14,13 @@
 .cdb-empleado-card__total{margin-top:10px;font-weight:600}
 
 /* Gráfica */
-.cdb-empleado-grafica-wrap{margin:0}           /* Quita márgenes y float anteriores */
+.cdb-empleado-grafica-wrap{margin:0;float:none!important}           /* Quita márgenes y float anteriores */
 .cdb-empleado-grafica-notice{margin-top:10px;font-size:.9rem;color:#666}
 @media (min-width:1024px){ .cdb-empleado-grafica-wrap{margin:0} }
 
 /* Sección inferior */
 .cdb-empleado-calificacion-wrap{clear:both;margin:24px 0}
+.cdb-empleado-hero .cdb-empleado-calificacion-wrap{grid-column:1/-1}
 
 /* Tabla de calificaciones: centrar columnas numéricas */
 .cdb-empleado-calificacion-wrap table thead th:nth-child(n+2),
