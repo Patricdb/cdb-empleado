@@ -85,15 +85,21 @@
 .cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody td:nth-child(2),
 .cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody td:nth-child(3),
 .cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody td:nth-child(4){
-  text-align:center !important;
-  vertical-align:middle;
+    text-align:center !important;
+    vertical-align:middle;
 }
 
 /* (Opcional) Evitar cortes raros en móvil */
 @media (max-width:480px){
-  .cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody th[scope="row"]{
-    white-space:nowrap;
-    padding-right:8px;
+    .cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody th[scope="row"]{
+      white-space:nowrap;
+      padding-right:8px;
+    }
   }
+
+.cdb-empleado-card__score{
+  display:inline-block; margin-top:8px; padding:4px 10px;
+  border-radius:9999px; background:#111; color:#fff; font-weight:700;
+  font-variant-numeric: tabular-nums;
 }
 
