@@ -61,3 +61,39 @@
     white-space: nowrap;
   }
 }
+
+/* === Tabla de calificación (marcada por cdb-grafica) === */
+.cdb-empleado-calificacion-wrap table.cdb-grafica-scores{
+  width:100%;
+  border-collapse:collapse;
+}
+
+/* Primera columna (Criterio) SIEMPRE a la izquierda */
+.cdb-empleado-calificacion-wrap table.cdb-grafica-scores thead th:first-child,
+.cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody th[scope="row"]{
+  text-align:left !important;
+}
+
+/* Cabeceras 2–4 centradas */
+.cdb-empleado-calificacion-wrap table.cdb-grafica-scores thead th:nth-child(2),
+.cdb-empleado-calificacion-wrap table.cdb-grafica-scores thead th:nth-child(3),
+.cdb-empleado-calificacion-wrap table.cdb-grafica-scores thead th:nth-child(4){
+  text-align:center !important;
+}
+
+/* Celdas de datos 2–4 centradas */
+.cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody td:nth-child(2),
+.cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody td:nth-child(3),
+.cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody td:nth-child(4){
+  text-align:center !important;
+  vertical-align:middle;
+}
+
+/* (Opcional) Evitar cortes raros en móvil */
+@media (max-width:480px){
+  .cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody th[scope="row"]{
+    white-space:nowrap;
+    padding-right:8px;
+  }
+}
+
