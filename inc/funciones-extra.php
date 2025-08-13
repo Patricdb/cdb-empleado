@@ -143,7 +143,7 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
     }
 
     if (false === apply_filters('cdb_empleado_inyectar_grafica', true, $empleado_id)) {
-        $hero = '';
+        $hero_html = '';
     } else {
         $attrs        = array('id_suffix' => 'content');
         $grafica_html = apply_filters('cdb_grafica_empleado_html', '', $empleado_id, $attrs);
@@ -162,10 +162,10 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
                     .  number_format_i18n($total, 0) . '</div>';
         $card_html .= '</div>';
 
-        $hero  = '<section class="cdb-empleado-hero">';
-        $hero .= $card_html;
-        $hero .= '<div class="cdb-empleado-grafica-wrap">' . $grafica_html . '</div>';
-        $hero .= '</section>';
+        $hero_html  = '<section class="cdb-empleado-hero">';
+        $hero_html .= $card_html;
+        $hero_html .= '<div class="cdb-empleado-grafica-wrap">' . $grafica_html . '</div>';
+        $hero_html .= '</section>';
     }
 
     $calificacion_block = '';
@@ -184,6 +184,6 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
     }
 
     $shortcode_output = do_shortcode('[equipos_del_empleado empleado_id="' . $empleado_id . '"]');
-    return $content . $hero . $calificacion_block . $shortcode_output;
+    return $content . $hero_html . $calificacion_block . $shortcode_output;
 }
 add_filter('the_content', 'cdb_inyectar_equipos_del_empleado_en_contenido');
