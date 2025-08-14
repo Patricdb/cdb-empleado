@@ -40,6 +40,9 @@
   vertical-align:middle;
 }
 
+/* Card contenedora de la tabla unificada */
+.cdb-scores-card{background:#fff7e6;/* adapta si tu tema usa otro tono */ border:1px solid rgba(0,0,0,.06);border-radius:12px;padding:16px;margin:16px 0 24px}
+
 /* (Opcional) margen de la leyenda/tablas unificadas */
 .cdb-scores-legend{ margin:8px 0 12px; }
 
