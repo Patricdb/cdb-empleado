@@ -136,11 +136,8 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
         return $content;
     }
 
-    $is_self = false;
-    if ( function_exists('cdb_obtener_empleado_id') ) {
-        $self_emp = (int) cdb_obtener_empleado_id( get_current_user_id() );
-        $is_self  = ($self_emp === (int) $empleado_id);
-    }
+    $is_self = function_exists('cdb_obtener_empleado_id')
+        && (int) cdb_obtener_empleado_id( get_current_user_id() ) === (int) $empleado_id;
 
     if (false === apply_filters('cdb_empleado_inyectar_grafica', true, $empleado_id)) {
         $hero_html = '';
@@ -169,22 +166,16 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
     }
 
     $calificacion_block = '';
-    if ( true === apply_filters('cdb_empleado_inyectar_calificacion', true, $empleado_id) ) {
-        $args_common = array('id_suffix' => 'content', 'embed_chart' => false);
-
+    if ( true === apply_filters( 'cdb_empleado_inyectar_calificacion', true, $empleado_id ) ) {
         if ( $is_self ) {
-            // Solo lectura (misma tabla que el form)
-            $body_html = apply_filters('cdb_grafica_empleado_scores_table_html', '', $empleado_id, array('with_legend' => true));
+            $body_html = apply_filters( 'cdb_grafica_empleado_scores_table_html', '', $empleado_id, array( 'with_legend' => true ) );
         } else {
-            $can_rate = current_user_can('submit_grafica_empleado'); // capacidad actual del proyecto
-            if ( $can_rate ) {
-                $body_html = apply_filters('cdb_grafica_empleado_form_html', '', $empleado_id, $args_common);
+            if ( current_user_can( 'submit_grafica_empleado' ) ) {
+                $body_html = apply_filters( 'cdb_grafica_empleado_form_html', '', $empleado_id, array( 'id_suffix' => 'content', 'embed_chart' => false ) );
             } else {
-                // ✅ usar el aviso oficial; si algún sitio lo anula, fallback a tabla de lectura
-                $notice    = apply_filters('cdb_grafica_empleado_notice', '', $empleado_id);
-                $body_html = ! empty( $notice )
-                    ? '<div class="cdb-grafica-empleado-notice">' . $notice . '</div>'
-                    : apply_filters('cdb_grafica_empleado_scores_table_html', '', $empleado_id, array('with_legend' => true));
+                $notice    = apply_filters( 'cdb_grafica_empleado_notice', '', $empleado_id );
+                $body_html = ! empty( $notice ) ? '<div class="cdb-grafica-empleado-notice">' . $notice . '</div>'
+                    : apply_filters( 'cdb_grafica_empleado_scores_table_html', '', $empleado_id, array( 'with_legend' => true ) );
             }
         }
 

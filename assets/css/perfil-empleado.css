@@ -12,78 +12,12 @@
 .cdb-pill.ok{background:#eaf7ef;color:#1f7a3d}
 .cdb-pill.off{background:#f8eaea;color:#a23434}
 .cdb-empleado-card__total{margin-top:10px;font-weight:600}
+.cdb-empleado-card__score{display:inline-block;margin-top:8px;padding:4px 10px;border-radius:9999px;background:#111;color:#fff;font-weight:700;font-variant-numeric:tabular-nums}
 
 /* Gráfica */
-.cdb-empleado-grafica-wrap{margin:0;float:none!important}           /* Quita márgenes y float anteriores */
+.cdb-empleado-grafica-wrap{float:none}
 .cdb-empleado-grafica-notice{margin-top:10px;font-size:.9rem;color:#666}
-@media (min-width:1024px){ .cdb-empleado-grafica-wrap{margin:0} }
 
 /* Sección inferior */
-.cdb-empleado-calificacion-wrap{clear:both;margin:24px 0}
-
-/* ⚠️ Reglas de alineación: aplicar SOLO a tablas que no sean la unificada de cdb-grafica */
-.cdb-empleado-calificacion-wrap table:not(.cdb-grafica-scores){
-  width:100%;
-  border-collapse:collapse;
-}
-.cdb-empleado-calificacion-wrap table:not(.cdb-grafica-scores) thead th:first-child,
-.cdb-empleado-calificacion-wrap table:not(.cdb-grafica-scores) tbody th[scope="row"]{
-  text-align:left !important;
-}
-.cdb-empleado-calificacion-wrap table:not(.cdb-grafica-scores) thead th:nth-child(2),
-.cdb-empleado-calificacion-wrap table:not(.cdb-grafica-scores) thead th:nth-child(3),
-.cdb-empleado-calificacion-wrap table:not(.cdb-grafica-scores) thead th:nth-child(4),
-.cdb-empleado-calificacion-wrap table:not(.cdb-grafica-scores) tbody td:nth-child(2),
-.cdb-empleado-calificacion-wrap table:not(.cdb-grafica-scores) tbody td:nth-child(3),
-.cdb-empleado-calificacion-wrap table:not(.cdb-grafica-scores) tbody td:nth-child(4){
-  text-align:center !important;
-  vertical-align:middle;
-}
-
-/* Card contenedora de la tabla unificada */
-.cdb-scores-card{background:#fff7e6;/* adapta si tu tema usa otro tono */ border:1px solid rgba(0,0,0,.06);border-radius:12px;padding:16px;margin:16px 0 24px}
-
-/* (Opcional) margen de la leyenda/tablas unificadas */
-.cdb-scores-legend{ margin:8px 0 12px; }
-
-/* === Tabla de calificación (marcada por cdb-grafica) === */
-.cdb-empleado-calificacion-wrap table.cdb-grafica-scores{
-  width:100%;
-  border-collapse:collapse;
-}
-
-/* Primera columna (Criterio) SIEMPRE a la izquierda */
-.cdb-empleado-calificacion-wrap table.cdb-grafica-scores thead th:first-child,
-.cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody th[scope="row"]{
-  text-align:left !important;
-}
-
-/* Cabeceras 2–4 centradas */
-.cdb-empleado-calificacion-wrap table.cdb-grafica-scores thead th:nth-child(2),
-.cdb-empleado-calificacion-wrap table.cdb-grafica-scores thead th:nth-child(3),
-.cdb-empleado-calificacion-wrap table.cdb-grafica-scores thead th:nth-child(4){
-  text-align:center !important;
-}
-
-/* Celdas de datos 2–4 centradas */
-.cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody td:nth-child(2),
-.cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody td:nth-child(3),
-.cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody td:nth-child(4){
-    text-align:center !important;
-    vertical-align:middle;
-}
-
-/* (Opcional) Evitar cortes raros en móvil */
-@media (max-width:480px){
-    .cdb-empleado-calificacion-wrap table.cdb-grafica-scores tbody th[scope="row"]{
-      white-space:nowrap;
-      padding-right:8px;
-    }
-  }
-
-.cdb-empleado-card__score{
-  display:inline-block; margin-top:8px; padding:4px 10px;
-  border-radius:9999px; background:#111; color:#fff; font-weight:700;
-  font-variant-numeric: tabular-nums;
-}
+.cdb-empleado-calificacion-wrap{margin:24px 0}
 
