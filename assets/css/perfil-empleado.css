@@ -20,7 +20,6 @@
 
 /* Sección inferior */
 .cdb-empleado-calificacion-wrap{clear:both;margin:24px 0}
-.cdb-empleado-hero .cdb-empleado-calificacion-wrap{grid-column:1/-1}
 
 /* Tabla de calificaciones: centrar columnas numéricas */
 .cdb-empleado-calificacion-wrap table thead th:nth-child(n+2),

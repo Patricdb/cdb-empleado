@@ -170,14 +170,16 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
 
     $calificacion_block = '';
     if ( true === apply_filters('cdb_empleado_inyectar_calificacion', true, $empleado_id) ) {
+        $args_common = array('id_suffix' => 'content', 'embed_chart' => false);
         if ( $is_self ) {
-            $body_html = apply_filters('cdb_grafica_empleado_scores_table_html', '', $empleado_id);
+            $body_html = apply_filters('cdb_grafica_empleado_scores_table_html', '', $empleado_id, array('with_legend' => true));
         } else {
-            $body_html = apply_filters('cdb_grafica_empleado_form_html', '', $empleado_id, array('embed_chart' => false, 'id_suffix' => 'content'));
-        }
-
-        if ( empty($body_html) ) {
-            $body_html = apply_filters('cdb_grafica_empleado_notice', '', $empleado_id);
+            $can_rate = current_user_can('submit_grafica_empleado');
+            if ( $can_rate ) {
+                $body_html = apply_filters('cdb_grafica_empleado_form_html', '', $empleado_id, $args_common);
+            } else {
+                $body_html = apply_filters('cdb_grafica_empleado_scores_table_html', '', $empleado_id, array('with_legend' => true));
+            }
         }
 
         $calificacion_block = '<div class="cdb-empleado-calificacion-wrap">' . $body_html . '</div>';
