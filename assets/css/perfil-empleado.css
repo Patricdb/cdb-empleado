@@ -24,3 +24,56 @@
 /* Acordeón de lectura */
 .cdb-scores-card{background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:16px}
 
+/* === Pastillas de valores (más anchas y legibles) === */
+
+/* Clase base (si ya existen .cdb-score o similar, extiéndelas aquí) */
+.cdb-empleado-calificacion-wrap .cdb-score-badge,
+.cdb-empleado-calificacion-wrap .cdb-score { /* fallback por si el HTML usa .cdb-score */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* ancho cómodo para 1–2 dígitos; ch usa el ancho del “0” de la fuente */
+  min-width: 3.2ch;                  /* ⟵ MÁS ANCHO */
+  padding: 0 .6ch;                   /* ⟵ MÁS RELLENO LATERAL */
+  height: 1.9em;                     /* caja estable */
+  line-height: 1;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,.15);
+  background: var(--cdb-score-bg, #efefef);
+  color: var(--cdb-score-fg, #222);
+  font-weight: 700;
+  font-size: 0.95rem;
+  /* alinear cifras como en tabla contable */
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  text-align: center;
+  vertical-align: middle;
+  margin-inline: .25rem;
+}
+
+/* Compacta el guion cuando no hay nota pero mantiene ancho consistente */
+.cdb-empleado-calificacion-wrap .cdb-score-badge.is-empty,
+.cdb-empleado-calificacion-wrap .cdb-score.is-empty {
+  opacity: .75;
+}
+
+/* Agrupa las tres pastillas (espaciado uniforme) */
+.cdb-empleado-calificacion-wrap .cdb-score-group {
+  display: inline-flex;
+  gap: .35rem;
+  vertical-align: middle;
+}
+
+/* Roles (colores ya alineados con la leyenda) */
+.cdb-empleado-calificacion-wrap .cdb-score--empleado  { --cdb-score-bg: rgba(0,0,0,.08);  --cdb-score-fg:#222; }
+.cdb-empleado-calificacion-wrap .cdb-score--empleador { --cdb-score-bg: rgba(75,75,75,.17); --cdb-score-fg:#222; }
+.cdb-empleado-calificacion-wrap .cdb-score--tutor     { --cdb-score-bg: rgba(206,180,120,.25); --cdb-score-fg:#222; }
+
+/* Pequeño ajuste en móvil: un pelín más de ancho para evitar cortes */
+@media (max-width: 480px) {
+  .cdb-empleado-calificacion-wrap .cdb-score-badge,
+  .cdb-empleado-calificacion-wrap .cdb-score {
+    min-width: 3.6ch;
+    padding: 0 .7ch;
+  }
+}
