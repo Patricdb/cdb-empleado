@@ -108,12 +108,15 @@ function cdb_empleado_admin_assets($hook) {
     }
 
     $equipos = get_posts(array(
-        'post_type'      => 'equipo',
-        'posts_per_page' => -1,
-        'post_status'    => 'publish',
-        'meta_key'       => '_cdb_equipo_year',
-        'orderby'        => 'meta_value_num',
-        'order'          => 'DESC',
+        'post_type'               => 'equipo',
+        'posts_per_page'          => -1,
+        'post_status'             => 'publish',
+        'meta_key'                => '_cdb_equipo_year',
+        'orderby'                 => 'meta_value_num',
+        'order'                   => 'DESC',
+        'cache_results'           => false,
+        'update_post_meta_cache'  => false,
+        'update_post_term_cache'  => false,
     ));
 
     wp_enqueue_script(
@@ -180,12 +183,15 @@ function cdb_empleado_meta_box_callback($post) {
 
     // Obtener todos los equipos disponibles
     $equipos = get_posts(array(
-        'post_type'      => 'equipo',
-        'posts_per_page' => -1,
-        'post_status'    => 'publish',
-        'meta_key'       => '_cdb_equipo_year', // Ordenar por año
-        'orderby'        => 'meta_value_num',
-        'order'          => 'DESC'
+        'post_type'               => 'equipo',
+        'posts_per_page'          => -1,
+        'post_status'             => 'publish',
+        'meta_key'                => '_cdb_equipo_year', // Ordenar por año
+        'orderby'                 => 'meta_value_num',
+        'order'                   => 'DESC',
+        'cache_results'           => false,
+        'update_post_meta_cache'  => false,
+        'update_post_term_cache'  => false,
     ));
 
     echo '<label for="cdb_empleado_year">' . __('Seleccionar Año:', 'cdb-empleado') . '</label>';
