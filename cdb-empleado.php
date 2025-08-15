@@ -156,6 +156,19 @@ function cdb_empleado_front_assets() {
 }
 
 /**
+ * Desactivar cache en la página singular de Empleado.
+ */
+function cdb_empleado_nocache() {
+    if (is_singular('empleado')) {
+        nocache_headers();
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Cache-Control: post-check=0, pre-check=0', false);
+        header('Pragma: no-cache');
+    }
+}
+add_action('template_redirect', 'cdb_empleado_nocache');
+
+/**
  * Render de la Metabox para asignar Equipo y Año.
  */
 function cdb_empleado_meta_box_callback($post) {
