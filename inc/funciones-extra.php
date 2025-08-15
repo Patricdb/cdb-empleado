@@ -43,13 +43,16 @@ function cdb_equipos_del_empleado_shortcode($atts) {
 
     // 2. Traer los posts del CPT "equipo"
     $equipos = get_posts(array(
-        'post_type'      => 'equipo',
-        'posts_per_page' => -1,
-        'post_status'    => 'publish',
-        'post__in'       => $equipos_ids,
-        'orderby'        => 'meta_value_num',
-        'meta_key'       => '_cdb_equipo_year',
-        'order'          => 'DESC'
+        'post_type'               => 'equipo',
+        'posts_per_page'          => -1,
+        'post_status'             => 'publish',
+        'post__in'                => $equipos_ids,
+        'orderby'                 => 'meta_value_num',
+        'meta_key'                => '_cdb_equipo_year',
+        'order'                   => 'DESC',
+        'cache_results'           => false,
+        'update_post_meta_cache'  => false,
+        'update_post_term_cache'  => false,
     ));
 
     if (empty($equipos)) {
