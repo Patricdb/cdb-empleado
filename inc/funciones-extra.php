@@ -194,27 +194,8 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
                     array( 'id_suffix' => 'content', 'embed_chart' => false )
                 );
             } else {
-                $notice_text = apply_filters(
-                    'cdb_grafica_empleado_notice',
-                    __( 'No puedes calificar a este empleado.', 'cdb-empleado' ),
-                    $empleado_id
-                );
-
-                // Siempre devolver HTML (sin huecos), preferentemente usando el helper del proveedor
-                if ( function_exists( 'cdb_grafica_notice_html' ) ) {
-                    $body_html = cdb_grafica_notice_html( $notice_text );
-                } else {
-                    // Fallback por si el helper no existiera (plugin desactivado, etc.)
-                    $body_html = '<p class="cdb-grafica-notice cdb-grafica-notice--warn">' . esc_html( $notice_text ) . '</p>';
-                }
+                $body_html = apply_filters( 'cdb_grafica_empleado_notice', '', $empleado_id );
             }
-        }
-
-        if ( '' === trim( (string) $body_html ) ) {
-            $fallback  = __( 'No se pudo generar el contenido de calificación en este momento.', 'cdb-empleado' );
-            $body_html = function_exists( 'cdb_grafica_notice_html' )
-                ? cdb_grafica_notice_html( $fallback )
-                : '<p class="cdb-grafica-notice cdb-grafica-notice--warn">' . esc_html( $fallback ) . '</p>';
         }
 
         if ( ! empty( $body_html ) ) {
