@@ -120,7 +120,7 @@ function cdb_empleado_admin_assets($hook) {
         'cdb-empleado-metabox',
         plugin_dir_url(__FILE__) . 'assets/js/equipo-year.js',
         array(),
-        '1.0.0',
+        filemtime( plugin_dir_path( __FILE__ ) . 'assets/js/equipo-year.js' ),
         true
     );
 
@@ -150,7 +150,7 @@ function cdb_empleado_front_assets() {
             'cdb-perfil-empleado',
             plugins_url('assets/css/perfil-empleado.css', __FILE__),
             array(),
-            '1.0.0'
+            filemtime( plugin_dir_path( __FILE__ ) . 'assets/css/perfil-empleado.css' )
         );
     }
 }
