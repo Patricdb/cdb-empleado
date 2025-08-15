@@ -132,7 +132,7 @@ add_action('init', 'cdb_equipos_del_empleado_registrar_shortcode');
 // Inyectar automáticamente la gráfica y el listado de equipos en single-empleado
 function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
     $empleado_id = get_queried_object_id();
-    if (get_post_type($empleado_id) !== 'empleado' || !in_the_loop() || !is_main_query()) {
+    if ( get_post_type( $empleado_id ) !== 'empleado' ) {
         return $content;
     }
 
