@@ -164,11 +164,14 @@ function cdb_empleado_admin_assets($hook) {
 
     $equipos = cdb_empleado_get_equipos();
 
+    $script_path = plugin_dir_path(__FILE__) . 'assets/js/equipo-year.js';
+    $script_version = file_exists($script_path) ? filemtime($script_path) : false;
+
     wp_enqueue_script(
         'cdb-empleado-metabox',
         plugin_dir_url(__FILE__) . 'assets/js/equipo-year.js',
         array(),
-        filemtime( plugin_dir_path( __FILE__ ) . 'assets/js/equipo-year.js' ),
+        $script_version ?: null,
         true
     );
 
@@ -194,11 +197,14 @@ add_action('admin_enqueue_scripts', 'cdb_empleado_admin_assets');
 add_action('wp_enqueue_scripts', 'cdb_empleado_front_assets');
 function cdb_empleado_front_assets() {
     if (!is_admin() && is_singular('empleado')) {
+        $style_path = plugin_dir_path(__FILE__) . 'assets/css/perfil-empleado.css';
+        $style_version = file_exists($style_path) ? filemtime($style_path) : false;
+
         wp_enqueue_style(
             'cdb-perfil-empleado',
             plugins_url('assets/css/perfil-empleado.css', __FILE__),
             array(),
-            filemtime( plugin_dir_path( __FILE__ ) . 'assets/css/perfil-empleado.css' )
+            $style_version ?: null
         );
     }
 }
