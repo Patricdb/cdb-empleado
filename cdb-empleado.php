@@ -104,6 +104,55 @@ function cdb_empleado_registrar_meta_box() {
 add_action('add_meta_boxes', 'cdb_empleado_registrar_meta_box');
 
 /**
+ * Obtener todos los equipos con título y año.
+ *
+ * @return array
+ */
+function cdb_empleado_get_equipos() {
+    $ids = get_posts(array(
+        'post_type'               => 'equipo',
+        'posts_per_page'          => -1,
+        'post_status'             => 'publish',
+        'meta_key'                => '_cdb_equipo_year',
+        'orderby'                 => 'meta_value_num',
+        'order'                   => 'DESC',
+        'cache_results'           => false,
+        'update_post_meta_cache'  => false,
+        'update_post_term_cache'  => false,
+        'no_found_rows'           => true,
+        'fields'                  => 'ids',
+    ));
+
+    if (empty($ids)) {
+        return array();
+    }
+
+    $posts  = array_map('get_post', $ids);
+    $titles = wp_list_pluck($posts, 'post_title', 'ID');
+
+    $years_data = array_map(function($id) {
+        return array(
+            'ID'   => $id,
+            'year' => get_post_meta($id, '_cdb_equipo_year', true),
+        );
+    }, $ids);
+    $years = wp_list_pluck($years_data, 'year', 'ID');
+
+    $equipos = array();
+    foreach ($ids as $id) {
+        $equipos[] = array(
+            'ID'         => $id,
+            'post_title' => isset($titles[$id]) ? $titles[$id] : '',
+            'meta'       => array(
+                '_cdb_equipo_year' => isset($years[$id]) ? $years[$id] : '',
+            ),
+        );
+    }
+
+    return $equipos;
+}
+
+/**
  * Encolar el script de la metabox y pasar los datos de equipos.
  */
 function cdb_empleado_admin_assets($hook) {
@@ -115,17 +164,7 @@ function cdb_empleado_admin_assets($hook) {
         return;
     }
 
-    $equipos = get_posts(array(
-        'post_type'               => 'equipo',
-        'posts_per_page'          => -1,
-        'post_status'             => 'publish',
-        'meta_key'                => '_cdb_equipo_year',
-        'orderby'                 => 'meta_value_num',
-        'order'                   => 'DESC',
-        'cache_results'           => false,
-        'update_post_meta_cache'  => false,
-        'update_post_term_cache'  => false,
-    ));
+    $equipos = cdb_empleado_get_equipos();
 
     wp_enqueue_script(
         'cdb-empleado-metabox',
@@ -190,17 +229,7 @@ function cdb_empleado_meta_box_callback($post) {
     wp_nonce_field('cdb_empleado_equipo_nonce_action', 'cdb_empleado_equipo_nonce');
 
     // Obtener todos los equipos disponibles
-    $equipos = get_posts(array(
-        'post_type'               => 'equipo',
-        'posts_per_page'          => -1,
-        'post_status'             => 'publish',
-        'meta_key'                => '_cdb_equipo_year', // Ordenar por año
-        'orderby'                 => 'meta_value_num',
-        'order'                   => 'DESC',
-        'cache_results'           => false,
-        'update_post_meta_cache'  => false,
-        'update_post_term_cache'  => false,
-    ));
+    $equipos = cdb_empleado_get_equipos();
 
     echo '<label for="cdb_empleado_year">' . __('Seleccionar Año:', 'cdb-empleado') . '</label>';
     echo '<select name="cdb_empleado_year" id="cdb_empleado_year">';
@@ -209,7 +238,7 @@ function cdb_empleado_meta_box_callback($post) {
     // Obtener años únicos de los equipos
     $years = [];
     foreach ($equipos as $equipo) {
-        $year = get_post_meta($equipo->ID, '_cdb_equipo_year', true);
+        $year = $equipo['meta']['_cdb_equipo_year'];
         if ($year && !in_array($year, $years)) {
             $years[] = $year;
             echo '<option value="' . esc_attr($year) . '" ' . selected($selected_year, $year, false) . '>' . esc_html($year) . '</option>';
@@ -223,9 +252,9 @@ function cdb_empleado_meta_box_callback($post) {
 
     // Mostrar equipos solo del año seleccionado
     foreach ($equipos as $equipo) {
-        $year = get_post_meta($equipo->ID, '_cdb_equipo_year', true);
+        $year = $equipo['meta']['_cdb_equipo_year'];
         if ($selected_year == $year) {
-            echo '<option value="' . esc_attr($equipo->ID) . '" ' . selected($selected_equipo, $equipo->ID, false) . '>' . esc_html($equipo->post_title) . '</option>';
+            echo '<option value="' . esc_attr($equipo['ID']) . '" ' . selected($selected_equipo, $equipo['ID'], false) . '>' . esc_html($equipo['post_title']) . '</option>';
         }
     }
     echo '</select>';
