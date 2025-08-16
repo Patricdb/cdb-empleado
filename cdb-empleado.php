@@ -286,7 +286,20 @@ function cdb_empleado_guardar_equipo_year($post_id) {
     }
 
     if (isset($_POST['cdb_empleado_equipo'])) {
-        update_post_meta($post_id, '_cdb_empleado_equipo', intval($_POST['cdb_empleado_equipo']));
+        $equipo_id = absint($_POST['cdb_empleado_equipo']);
+
+        if ($equipo_id) {
+            $equipo_post = get_post($equipo_id);
+
+            if ($equipo_post && 'equipo' === $equipo_post->post_type && 'publish' === $equipo_post->post_status) {
+                update_post_meta($post_id, '_cdb_empleado_equipo', $equipo_id);
+            } else {
+                delete_post_meta($post_id, '_cdb_empleado_equipo');
+                error_log("cdb-empleado: ID de equipo inválido {$equipo_id} para el empleado {$post_id}");
+            }
+        } else {
+            delete_post_meta($post_id, '_cdb_empleado_equipo');
+        }
     }
 }
 add_action('save_post_empleado', 'cdb_empleado_guardar_equipo_year');
