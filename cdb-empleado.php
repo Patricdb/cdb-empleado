@@ -17,23 +17,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Cargar el dominio de traducción del plugin.
+ */
+function cdb_empleado_load_textdomain() {
+    load_plugin_textdomain( 'cdb-empleado', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
+add_action( 'plugins_loaded', 'cdb_empleado_load_textdomain' );
+
+/**
  * Registrar el Custom Post Type "Empleado".
  */
 function cdb_registrar_cpt_empleado() {
     $labels = array(
-        'name'               => 'Empleados',
-        'singular_name'      => 'Empleado',
-        'menu_name'          => 'Empleados',
-        'name_admin_bar'     => 'Empleado',
-        'add_new'            => 'Añadir Nuevo',
-        'add_new_item'       => 'Añadir Nuevo Empleado',
-        'new_item'           => 'Nuevo Empleado',
-        'edit_item'          => 'Editar Empleado',
-        'view_item'          => 'Ver Empleado',
-        'all_items'          => 'Todos los Empleados',
-        'search_items'       => 'Buscar Empleados',
-        'not_found'          => 'No se encontraron empleados',
-        'not_found_in_trash' => 'No se encontraron empleados en la papelera'
+        'name'               => _x( 'Empleados', 'Post Type General Name', 'cdb-empleado' ),
+        'singular_name'      => _x( 'Empleado', 'Post Type Singular Name', 'cdb-empleado' ),
+        'menu_name'          => __( 'Empleados', 'cdb-empleado' ),
+        'name_admin_bar'     => __( 'Empleado', 'cdb-empleado' ),
+        'add_new'            => __( 'Añadir Nuevo', 'cdb-empleado' ),
+        'add_new_item'       => __( 'Añadir Nuevo Empleado', 'cdb-empleado' ),
+        'new_item'           => __( 'Nuevo Empleado', 'cdb-empleado' ),
+        'edit_item'          => __( 'Editar Empleado', 'cdb-empleado' ),
+        'view_item'          => __( 'Ver Empleado', 'cdb-empleado' ),
+        'all_items'          => __( 'Todos los Empleados', 'cdb-empleado' ),
+        'search_items'       => __( 'Buscar Empleados', 'cdb-empleado' ),
+        'not_found'          => __( 'No se encontraron empleados', 'cdb-empleado' ),
+        'not_found_in_trash' => __( 'No se encontraron empleados en la papelera', 'cdb-empleado' )
     );
 
     $args = array(
