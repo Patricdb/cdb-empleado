@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var selectedYear = yearSelect.value;
         equipoSelect.innerHTML = '<option value="">' + cdbEmpleadoTexts.select_team + '</option>';
         equiposData.forEach(function(equipo) {
-            if (equipo.meta && equipo.meta._cdb_equipo_year == selectedYear) {
+            if (equipo._cdb_equipo_year == selectedYear) {
                 var option = document.createElement('option');
                 option.value = equipo.ID;
                 option.textContent = equipo.post_title;

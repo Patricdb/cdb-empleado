@@ -143,9 +143,7 @@ function cdb_empleado_get_equipos() {
         $equipos[] = array(
             'ID'         => $id,
             'post_title' => isset($titles[$id]) ? $titles[$id] : '',
-            'meta'       => array(
-                '_cdb_equipo_year' => isset($years[$id]) ? $years[$id] : '',
-            ),
+            '_cdb_equipo_year' => isset($years[$id]) ? $years[$id] : '',
         );
     }
 
@@ -238,7 +236,7 @@ function cdb_empleado_meta_box_callback($post) {
     // Obtener años únicos de los equipos
     $years = [];
     foreach ($equipos as $equipo) {
-        $year = $equipo['meta']['_cdb_equipo_year'];
+        $year = $equipo['_cdb_equipo_year'];
         if ($year && !in_array($year, $years)) {
             $years[] = $year;
             echo '<option value="' . esc_attr($year) . '" ' . selected($selected_year, $year, false) . '>' . esc_html($year) . '</option>';
@@ -252,7 +250,7 @@ function cdb_empleado_meta_box_callback($post) {
 
     // Mostrar equipos solo del año seleccionado
     foreach ($equipos as $equipo) {
-        $year = $equipo['meta']['_cdb_equipo_year'];
+        $year = $equipo['_cdb_equipo_year'];
         if ($selected_year == $year) {
             echo '<option value="' . esc_attr($equipo['ID']) . '" ' . selected($selected_equipo, $equipo['ID'], false) . '>' . esc_html($equipo['post_title']) . '</option>';
         }
