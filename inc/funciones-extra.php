@@ -169,33 +169,42 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
     }
 
     $calificacion_block = '';
+    $body_html           = '';
+
     if ( true === apply_filters( 'cdb_empleado_inyectar_calificacion', true, $empleado_id ) ) {
         if ( $is_self ) {
-            $body_html = apply_filters(
-                'cdb_grafica_empleado_readonly_html',
-                '',
-                $empleado_id,
-                array(
+            // 1) propio: readonly -> tabla
+            $body_html = apply_filters( 'cdb_grafica_empleado_readonly_html', '', $empleado_id, [
+                'id_suffix'   => 'content',
+                'show_legend' => true,
+            ] );
+            if ( '' === $body_html ) {
+                $body_html = apply_filters( 'cdb_grafica_empleado_scores_table_html', '', $empleado_id, [ 'with_legend' => true ] );
+            }
+        } else {
+            if ( current_user_can( 'submit_grafica_empleado' ) && $comparteequipo ) {
+                // 2) ajeno con permiso: form
+                $body_html = apply_filters( 'cdb_grafica_empleado_form_html', '', $empleado_id, [
+                    'id_suffix'   => 'content',
+                    'embed_chart' => false,
+                ] );
+            } else {
+                // 3) ajeno sin permiso: readonly -> aviso -> tabla
+                $body_html = apply_filters( 'cdb_grafica_empleado_readonly_html', '', $empleado_id, [
                     'id_suffix'   => 'content',
                     'show_legend' => true,
-                )
-            );
-        } else {
-            if ( current_user_can( 'submit_grafica_empleado' ) ) {
-                $body_html = apply_filters(
-                    'cdb_grafica_empleado_form_html',
-                    '',
-                    $empleado_id,
-                    array(
-                        'id_suffix'   => 'content',
-                        'embed_chart' => false,
-                    )
-                );
-            } else {
-                $body_html = apply_filters( 'cdb_grafica_empleado_notice', '', $empleado_id );
+                ] );
+                if ( '' === $body_html ) {
+                    $body_html = apply_filters( 'cdb_grafica_empleado_notice', '', $empleado_id );
+                    if ( '' === $body_html ) {
+                        $body_html = apply_filters( 'cdb_grafica_empleado_scores_table_html', '', $empleado_id, [ 'with_legend' => true ] );
+                    }
+                }
             }
         }
+    }
 
+    if ( '' !== $body_html ) {
         $calificacion_block = '<div class="cdb-empleado-calificacion-wrap">' . $body_html . '</div>';
     }
 
