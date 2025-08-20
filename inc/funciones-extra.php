@@ -150,8 +150,10 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
 
         if ( apply_filters( 'cdb_empleado_use_new_card', false ) ) {
             ob_start();
-            include dirname( __DIR__ ) . '/templates/empleado-card-oct.php';
-            $card_html = ob_get_clean();
+            $empleado_id = get_the_ID();
+            include plugin_dir_path( __DIR__ ) . 'templates/empleado-card-oct.php';
+            $tarjeta_oct = ob_get_clean();
+            $card_html   = $tarjeta_oct;
         } else {
             $empleado_author = (int) get_post_field('post_author', $empleado_id);
             $disponible      = ('1' === get_post_meta($empleado_id, 'disponible', true));

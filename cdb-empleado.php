@@ -323,3 +323,11 @@ register_deactivation_hook( __FILE__, array( 'Cdb_Empleado_Plugin', 'desactivar'
 // Instanciar el plugin.
 new Cdb_Empleado_Plugin();
 
+// Encolar estilos de la tarjeta octogonal solo cuando el flag esté activo.
+add_action('wp_enqueue_scripts', function(){
+  if ( apply_filters('cdb_empleado_use_new_card', false) ) {
+    wp_register_style('cdb-empleado-card-oct', plugins_url('assets/css/empleado-card-oct.css', __FILE__), [], '1.0');
+    wp_enqueue_style('cdb-empleado-card-oct');
+  }
+}, 20);
+
