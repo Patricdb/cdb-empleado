@@ -30,6 +30,7 @@ class Cdb_Empleado_Plugin {
         require_once plugin_dir_path( __FILE__ ) . 'inc/roles-capacidades.php';
         require_once plugin_dir_path( __FILE__ ) . 'inc/permisos.php';
         require_once plugin_dir_path( __FILE__ ) . 'inc/funciones-extra.php';
+        require_once plugin_dir_path( __FILE__ ) . 'includes/template-tags.php';
 
         add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
         add_action( 'init', array( __CLASS__, 'registrar_cpt_empleado' ) );
