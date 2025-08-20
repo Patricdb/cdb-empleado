@@ -5,7 +5,7 @@
 }
 
 /* Tarjeta */
-.cdb-empleado-card{border-radius:16px;padding:16px;background:linear-gradient(180deg,#f5e8c8,#efe1b4);box-shadow:0 2px 8px rgba(0,0,0,.06);-webkit-clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)}
+.cdb-empleado-card{border-radius:16px;padding:16px;background:linear-gradient(180deg,#f5e8c8,#efe1b4);box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .cdb-empleado-card__avatar img{border-radius:9999px;display:block}
 .cdb-empleado-card__name{font-weight:700;font-size:1.25rem;margin-top:8px}
 .cdb-pill{display:inline-block;margin-top:6px;padding:2px 10px;border-radius:9999px;font-size:.85rem}
