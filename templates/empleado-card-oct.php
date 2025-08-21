@@ -56,27 +56,17 @@ $card_id     = 'empcard8-'.(int)$empleado_id;
     </div>
     <div class="cdb-empcard8__groups">
       <span class="cdb-empcard8__section-title"><?php esc_html_e('Top grupos', 'cdb-empleado'); ?></span>
-      <ul class="cdb-empcard8__groups-list" aria-label="<?php esc_attr_e('Tres grupos con mayor promedio', 'cdb-empleado'); ?>">
-        <?php
-        $top_groups = array_slice( (array)$top_groups, 0, 3 );
-        if ( $top_groups ) :
-          foreach ( $top_groups as $g ) :
-            $k = strtoupper( (string)($g['key'] ?? '') );
-            $v = isset($g['avg']) ? round((float)$g['avg'], 1) : null;
-        ?>
-          <li class="cdb-empcard8__grp">
-            <span class="cdb-empcard8__grp-code"><?php echo esc_html($k ?: '—'); ?></span>
-            <span class="cdb-empcard8__grp-val"><?php echo is_null($v) ? '—' : esc_html( number_format_i18n($v,1) ); ?></span>
-          </li>
-        <?php
-          endforeach;
-        else :
-        ?>
-          <li class="cdb-empcard8__grp is-empty">—</li>
-          <li class="cdb-empcard8__grp is-empty">—</li>
-          <li class="cdb-empcard8__grp is-empty">—</li>
-        <?php endif; ?>
-      </ul>
+      <?php $top_groups = array_slice( (array) $top_groups, 0, 3 ); ?>
+      <div class="cdb-empcard8__groups-table">
+        <?php foreach ( $top_groups as $g ):
+          $k = strtoupper( (string) ( $g['key'] ?? '' ) );
+          $v = isset( $g['avg'] ) ? round( (float) $g['avg'], 1 ) : null; ?>
+          <div class="cdb-empcard8__grp">
+            <span class="cdb-empcard8__grp-code"><?php echo esc_html( $k ?: '—' ); ?></span>
+            <span class="cdb-empcard8__grp-val"><?php echo is_null( $v ) ? '—' : esc_html( number_format_i18n( $v, 1 ) ); ?></span>
+          </div>
+        <?php endforeach; ?>
+      </div>
     </div>
   </div>
 
