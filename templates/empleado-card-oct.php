@@ -27,7 +27,11 @@ $card_id     = 'empcard8-'.(int)$empleado_id;
   </div>
 
   <div class="cdb-empcard8__center" aria-hidden="true">
-    <img src="<?php echo esc_url( plugins_url('assets/img/empleado-silueta.svg', __FILE__) ); ?>" alt="" />
+    <!-- Silueta neutra SVG -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" focusable="false">
+      <circle cx="128" cy="84" r="36"/><rect x="104" y="116" width="48" height="28" rx="10" ry="10"/>
+      <path d="M64 224v-16c0-33.1 28.7-60 64-60s64 26.9 64 60v16H64z"/>
+    </svg>
   </div>
 
   <div class="cdb-empcard8__rank">
