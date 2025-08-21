@@ -323,9 +323,6 @@ register_deactivation_hook( __FILE__, array( 'Cdb_Empleado_Plugin', 'desactivar'
 // Instanciar el plugin.
 new Cdb_Empleado_Plugin();
 
-// Forzar el uso de la nueva tarjeta de empleado.
-add_filter( 'cdb_empleado_use_new_card', '__return_true', 20 );
-
 // Encolar estilos de la tarjeta octogonal solo cuando el flag esté activo.
 add_action('wp_enqueue_scripts', function(){
   if ( apply_filters('cdb_empleado_use_new_card', false) ) {
