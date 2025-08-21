@@ -55,26 +55,28 @@ $card_id = 'empcard8-'.(int)$empleado_id;
 
   <!-- FOOTER -->
   <div class="cdb-empcard8__footer">
-    <!-- Posiciones (una línea, sin etiqueta) -->
-    <div class="cdb-empcard8__positions-line" aria-label="<?php esc_attr_e('Últimas posiciones', 'cdb-empleado'); ?>">
-      <?php echo esc_html( $positions_text ); ?>
+    <div>
+      <span class="cdb-empcard8__section-title"><?php esc_html_e('Últimas posiciones', 'cdb-empleado'); ?></span>
+      <div class="cdb-empcard8__positions-line"><?php echo esc_html( $positions_text ); ?></div>
     </div>
 
-    <!-- Top grupos (3 columnas, sin etiqueta) -->
-    <ul class="cdb-empcard8__groups-list" aria-label="<?php esc_attr_e('Tres grupos con mayor promedio', 'cdb-empleado'); ?>">
-      <?php if ($top_groups): foreach ($top_groups as $g):
-        $k = strtoupper( (string)($g['key'] ?? '') );
-        $v = isset($g['avg']) ? round((float)$g['avg'], 1) : null; ?>
-        <li class="cdb-empcard8__grp">
-          <span class="cdb-empcard8__grp-code"><?php echo esc_html($k ?: '—'); ?></span>
-          <span class="cdb-empcard8__grp-val"><?php echo is_null($v) ? '—' : esc_html( number_format_i18n($v,1) ); ?></span>
-        </li>
-      <?php endforeach; else: ?>
-        <li class="cdb-empcard8__grp">—</li>
-        <li class="cdb-empcard8__grp">—</li>
-        <li class="cdb-empcard8__grp">—</li>
-      <?php endif; ?>
-    </ul>
+    <div>
+      <span class="cdb-empcard8__section-title"><?php esc_html_e('Top grupos', 'cdb-empleado'); ?></span>
+      <ul class="cdb-empcard8__groups-list" aria-label="<?php esc_attr_e('Tres grupos con mayor promedio', 'cdb-empleado'); ?>">
+        <?php if ($top_groups): foreach ($top_groups as $g):
+          $k = strtoupper( (string)($g['key'] ?? '') );
+          $v = isset($g['avg']) ? round((float)$g['avg'], 1) : null; ?>
+          <li class="cdb-empcard8__grp">
+            <span class="cdb-empcard8__grp-code"><?php echo esc_html($k ?: '—'); ?></span>
+            <span class="cdb-empcard8__grp-val"><?php echo is_null($v) ? '—' : esc_html( number_format_i18n($v,1) ); ?></span>
+          </li>
+        <?php endforeach; else: ?>
+          <li class="cdb-empcard8__grp">—</li>
+          <li class="cdb-empcard8__grp">—</li>
+          <li class="cdb-empcard8__grp">—</li>
+        <?php endif; ?>
+      </ul>
+    </div>
   </div>
 
   <span id="<?php echo esc_attr($card_id); ?>-desc" class="screen-reader-text">
