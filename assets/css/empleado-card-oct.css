@@ -37,9 +37,11 @@
 /* Áreas */
 .cdb-empcard8__name{ grid-area:name; font-size:var(--cdb8-fs-name); font-weight:600; text-align:center; text-transform:uppercase;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.cdb-empcard8__badges{ grid-area:badges; display:grid; grid-auto-flow:column; grid-auto-columns:1fr; align-items:center; gap:calc(var(--cdb8-gap)*0.6); }
-.cdb-empcard8__badge{ width:var(--cdb8-badge); height:var(--cdb8-badge); border-radius:999px;
-  border:1px solid var(--cdb8-border); display:grid; place-items:center; font-weight:600; color:#6b6b6b; }
+.cdb-empcard8__badges-wrap{ grid-area:badges; display:grid; gap:calc(var(--cdb8-gap)*0.4); }
+.cdb-empcard8__badges-label{ font-size:var(--cdb8-fs-label); color:var(--cdb8-muted); text-transform:uppercase; letter-spacing:.06em; }
+.cdb-empcard8__badges{ display:grid; grid-auto-flow:column; grid-auto-columns:1fr; align-items:center; gap:calc(var(--cdb8-gap)*0.6); }
+.cdb-empcard8__badge{ width:var(--cdb8-badge); height:var(--cdb8-badge); border-radius:999px; border:1px solid var(--cdb8-border);
+  display:grid; place-items:center; font-weight:600; color:#6b6b6b; }
 .cdb-empcard8__badge.is-empty{ color:var(--cdb8-muted); opacity:.6; }
 
 .cdb-empcard8__center{ grid-area:center; display:grid; place-items:center; }
