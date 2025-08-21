@@ -16,14 +16,17 @@ $card_id     = 'empcard8-'.(int)$empleado_id;
     <?php echo esc_html( $name ); ?>
   </div>
 
-  <div class="cdb-empcard8__badges" aria-label="<?php esc_attr_e('Insignias', 'cdb-empleado'); ?>">
-    <?php if ($badges): foreach ($badges as $b): ?>
-      <span class="cdb-empcard8__badge" title="<?php echo esc_attr($b['label'] ?? ''); ?>"></span>
-    <?php endforeach; else: ?>
-      <span class="cdb-empcard8__badge is-empty" aria-hidden="true">—</span>
-      <span class="cdb-empcard8__badge is-empty" aria-hidden="true">—</span>
-      <span class="cdb-empcard8__badge is-empty" aria-hidden="true">—</span>
-    <?php endif; ?>
+  <div class="cdb-empcard8__badges-wrap">
+    <span class="cdb-empcard8__badges-label"><?php esc_html_e('Insignias','cdb-empleado'); ?></span>
+    <div class="cdb-empcard8__badges">
+      <?php if ($badges): foreach ($badges as $b): ?>
+        <span class="cdb-empcard8__badge" title="<?php echo esc_attr($b['label'] ?? ''); ?>"></span>
+      <?php endforeach; else: ?>
+        <span class="cdb-empcard8__badge is-empty" aria-hidden="true">—</span>
+        <span class="cdb-empcard8__badge is-empty" aria-hidden="true">—</span>
+        <span class="cdb-empcard8__badge is-empty" aria-hidden="true">—</span>
+      <?php endif; ?>
+    </div>
   </div>
 
   <div class="cdb-empcard8__center" aria-hidden="true">
