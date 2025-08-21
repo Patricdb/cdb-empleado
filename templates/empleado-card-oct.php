@@ -17,7 +17,7 @@ $card_id     = 'empcard8-'.(int)$empleado_id;
   </div>
 
   <div class="cdb-empcard8__badges-wrap">
-    <span class="cdb-empcard8__badges-label"><?php esc_html_e('Insignias','cdb-empleado'); ?></span>
+    <span class="cdb-empcard8__badges-label"><?php esc_html_e( 'Insignias', 'cdb-empleado' ); ?></span>
     <div class="cdb-empcard8__badges">
       <?php if ($badges): foreach ($badges as $b): ?>
         <span class="cdb-empcard8__badge" title="<?php echo esc_attr($b['label'] ?? ''); ?>"></span>
