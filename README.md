@@ -29,7 +29,7 @@ Este plugin asume que existen los CPT `equipo` y `cdb_posiciones`, así como la 
 ## Hooks relevantes
 
 - `cdb_empleado_inyectar_grafica` y `cdb_empleado_inyectar_calificacion` permiten habilitar o deshabilitar los bloques automáticos.
-- `cdb_grafica_empleado_html`, `cdb_grafica_empleado_form_html`, `cdb_grafica_empleado_scores_table_html` y `cdb_grafica_empleado_total` se utilizan para personalizar la información mostrada en la tarjeta y la gráfica.
+- `cdb_grafica_empleado_html`, `cdb_grafica_empleado_form_html`, `cdb_grafica_empleado_scores_table_html` y `cdb_grafica_empleado_total` se utilizan para personalizar la información mostrada en la tarjeta y la gráfica. El filtro `cdb_grafica_empleado_html` debe devolver únicamente el marcado del gráfico; si se requiere una tabla de puntuaciones se puede usar `cdb_grafica_empleado_scores_table_html`.
 
 ## Changelog
 
