@@ -38,7 +38,7 @@
 .cdb-empcard8__badge.is-empty{ opacity:.7; }
 
 .cdb-empcard8__center{ grid-area:center; display:grid; place-items:center; }
-.cdb-empcard8__center img{ width:var(--cdb8-avatar); height:auto; }
+.cdb-empcard8__center svg{ width:var(--cdb8-avatar); height:auto; color:#6B6B6B; }
 
 .cdb-empcard8__rank{ grid-area:rank; display:grid; align-content:center; justify-items:end; text-align:right; }
 .cdb-empcard8__rank-label{ font-size:var(--cdb8-fs-label); color:var(--cdb8-muted); text-transform:uppercase; letter-spacing:.06em; }
