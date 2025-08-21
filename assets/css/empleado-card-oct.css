@@ -1,10 +1,10 @@
 :root{
   --card-size: clamp(300px, 90vw, 360px);
   --cdb8-bg:#F4EFDF; --cdb8-ink:#2B2B2B; --cdb8-border:#00000014; --cdb8-muted:#8E7E60;
-  --cdb8-pad:   calc(var(--card-size) * 20 / 360);
-  --cdb8-gap:   calc(var(--card-size) * 14 / 360);
-  --cdb8-avatar:calc(var(--card-size) * 160 / 360);
-  --cdb8-badge: calc(var(--card-size) * 56 / 360);
+  --cdb8-pad: calc(20px * (var(--card-size)/360));
+  --cdb8-gap: calc(14px * (var(--card-size)/360));
+  --cdb8-avatar: calc(160px * (var(--card-size)/360));
+  --cdb8-badge: calc(56px * (var(--card-size)/360));
   --cdb8-fs-name: clamp(16px, calc(var(--card-size)*0.065), 28px);
   --cdb8-fs-label: clamp(10px, calc(var(--card-size)*0.035), 14px);
   --cdb8-fs-rank: clamp(28px, calc(var(--card-size)*0.18), 64px);
