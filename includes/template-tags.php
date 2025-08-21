@@ -38,10 +38,7 @@ function cdb_empleado_get_card_data( int $empleado_id ): array {
 
     $top_groups = array();
     foreach ( array_slice( $items, 0, 3 ) as $item ) {
-        $top_groups[] = array(
-            'key' => $item['key'],
-            'avg' => (float) $item['value'],
-        );
+        $top_groups[ $item['key'] ] = $item['value'];
     }
 
     $rank_current = cdb_empleado_get_rank_current( $empleado_id );
