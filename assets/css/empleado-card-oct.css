@@ -35,7 +35,7 @@
 .cdb-empcard8--l{ --card-size:420px; }
 
 /* Áreas */
-.cdb-empcard8__name{ grid-area:name; font-size:var(--cdb8-fs-name); font-weight:600;
+.cdb-empcard8__name{ grid-area:name; font-size:var(--cdb8-fs-name); font-weight:600; text-align:center; text-transform:uppercase;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .cdb-empcard8__badges{ grid-area:badges; display:grid; grid-auto-flow:column; grid-auto-columns:1fr; align-items:center; gap:calc(var(--cdb8-gap)*0.6); }
 .cdb-empcard8__badge{ width:var(--cdb8-badge); height:var(--cdb8-badge); border-radius:999px;
