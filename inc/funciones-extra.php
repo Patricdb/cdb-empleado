@@ -132,46 +132,6 @@ function cdb_equipos_del_empleado_registrar_shortcode() {
 }
 add_action('init', 'cdb_equipos_del_empleado_registrar_shortcode');
 
-/**
- * Remove <canvas> and <table> elements from given HTML.
- *
- * Some callbacks hooked to `cdb_grafica_empleado_form_html` may ignore the
- * `embed_chart` parameter and include chart markup. This helper strips those
- * nodes to ensure only rating fields are shown.
- *
- * @param string $html Original HTML.
- * @return string HTML without canvas or table elements.
- */
-function cdb_empleado_strip_chart_nodes( string $html ): string {
-    if ( trim( $html ) === '' ) {
-        return $html;
-    }
-
-    $dom = new DOMDocument();
-    libxml_use_internal_errors( true );
-    $dom->loadHTML( '<?xml encoding="utf-8"?>' . $html );
-    libxml_clear_errors();
-
-    foreach ( array( 'canvas', 'table' ) as $tag ) {
-        $nodes = $dom->getElementsByTagName( $tag );
-        // Remove nodes until none remain.
-        while ( $nodes->length > 0 ) {
-            $node = $nodes->item( 0 );
-            $node->parentNode->removeChild( $node );
-        }
-    }
-
-    $body      = $dom->getElementsByTagName( 'body' )->item( 0 );
-    $innerHTML = '';
-    if ( $body ) {
-        foreach ( $body->childNodes as $child ) {
-            $innerHTML .= $dom->saveHTML( $child );
-        }
-    }
-
-    return $innerHTML;
-}
-
 // Inyectar automáticamente la gráfica y el listado de equipos en single-empleado
 function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
     $empleado_id = get_queried_object_id();
@@ -223,7 +183,6 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
         } else {
             if ( current_user_can( 'submit_grafica_empleado' ) ) {
                 $body_html = apply_filters( 'cdb_grafica_empleado_form_html', '', $empleado_id, array( 'id_suffix' => 'content', 'embed_chart' => false ) );
-                $body_html = cdb_empleado_strip_chart_nodes( $body_html );
             } else {
                 $notice = apply_filters( 'cdb_grafica_empleado_notice', '', $empleado_id );
                 if ( ! empty( $notice ) ) {
