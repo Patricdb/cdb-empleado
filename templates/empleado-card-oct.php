@@ -47,12 +47,12 @@ $card_id     = 'empcard8-'.(int)$empleado_id;
   <div class="cdb-empcard8__footer">
     <div class="cdb-empcard8__positions">
       <span class="cdb-empcard8__section-title"><?php esc_html_e('Últimas posiciones', 'cdb-empleado'); ?></span>
-      <?php
-        $positions = array_slice($history, 0, 3);
-        $text = implode(', ', array_map(
-          fn($v) => $v ? (int)$v : '—', $positions));
-      ?>
-      <p class="cdb-empcard8__positions-values"><?php echo esc_html($text); ?></p>
+      <ul class="cdb-empcard8__positions-list" aria-label="<?php esc_attr_e('Tres últimas posiciones', 'cdb-empleado'); ?>">
+        <?php for ($i=0; $i<3; $i++): ?>
+          <?php $val = $history[$i] ?? null; ?>
+          <li class="cdb-empcard8__pos"><?php echo $val ? esc_html( (int)$val ) : '—'; ?></li>
+        <?php endfor; ?>
+      </ul>
     </div>
     <div class="cdb-empcard8__groups">
       <span class="cdb-empcard8__section-title"><?php esc_html_e('Top grupos', 'cdb-empleado'); ?></span>
