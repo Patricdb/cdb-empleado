@@ -35,12 +35,8 @@ $card_id     = 'empcard8-'.(int)$empleado_id;
 
   <div class="cdb-empcard8__rank">
     <span class="cdb-empcard8__rank-label"><?php esc_html_e('Puesto', 'cdb-empleado'); ?></span>
-    <?php
-      $title = $rank ? __( 'Puesto en el ranking total de empleados', 'cdb-empleado' )
-                     : __( 'Aún sin ranking', 'cdb-empleado' );
-    ?>
-    <span class="cdb-empcard8__rank-value" title="<?php echo esc_attr( $title ); ?>">
-      <?php echo $rank ? sprintf( '%02d', (int) $rank ) : 'ND'; ?>
+    <span class="cdb-empcard8__rank-value" title="<?php esc_attr_e('Puesto en el ranking total de empleados', 'cdb-empleado'); ?>">
+      <?php echo $rank ? esc_html( number_format_i18n( (int)$rank ) ) : 'ND'; ?>
     </span>
   </div>
 
