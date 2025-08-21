@@ -53,10 +53,11 @@
 
 .cdb-empcard8__footer{ grid-area:footer; display:grid; gap:calc(var(--cdb8-gap)*0.8); }
 .cdb-empcard8__section-title{ font-size:var(--cdb8-fs-label); color:var(--cdb8-muted); text-transform:uppercase; letter-spacing:.06em; }
-.cdb-empcard8__groups-list{
+.cdb-empcard8__positions-list, .cdb-empcard8__groups-list{
   display:grid; grid-template-columns:repeat(3, 1fr); gap:calc(var(--cdb8-gap)*0.5); list-style:none; padding:0; margin:0;
 }
-.cdb-empcard8__positions-values{ font-size:var(--cdb8-fs-label); }
+.cdb-empcard8__pos{ display:grid; place-items:center; min-height:2.2em; border:1px solid var(--cdb8-border);
+  border-radius:999px; font-weight:600; }
 .cdb-empcard8__grp{ display:flex; align-items:center; justify-content:center; gap:.4em; min-height:2.2em;
   border:1px solid var(--cdb8-border); border-radius:999px; padding:0 .7em; }
 .cdb-empcard8__grp.is-empty{ color:var(--cdb8-muted); opacity:.6; }
