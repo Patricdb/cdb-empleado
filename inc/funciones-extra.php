@@ -148,9 +148,27 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
         $attrs        = array('id_suffix' => 'content');
         $grafica_html = apply_filters('cdb_grafica_empleado_html', '', $empleado_id, $attrs);
 
-        ob_start();
-        cdb_empleado_render_profile_card( $empleado_id );
-        $card_html = ob_get_clean();
+        if ( apply_filters( 'cdb_empleado_use_new_card', false ) ) {
+            ob_start();
+            $empleado_id = get_the_ID();
+            include plugin_dir_path( __DIR__ ) . 'templates/empleado-card-oct.php';
+            $tarjeta_oct = ob_get_clean();
+            $card_html   = $tarjeta_oct;
+        } else {
+            $empleado_author = (int) get_post_field('post_author', $empleado_id);
+            $disponible      = ('1' === get_post_meta($empleado_id, 'disponible', true));
+            $total           = (float) apply_filters('cdb_grafica_empleado_total', 0, $empleado_id);
+
+            $card_html  = '<div class="cdb-empleado-card">';
+            $card_html .= '<div class="cdb-empleado-card__avatar">' . get_avatar($empleado_author, 96) . '</div>';
+            $card_html .= '<div class="cdb-empleado-card__name">' . esc_html(get_the_title($empleado_id)) . '</div>';
+            $card_html .= '<div class="cdb-pill ' . ($disponible ? 'ok' : 'off') . '">';
+            $card_html .= $disponible ? __('Disponible', 'cdb-empleado') : __('No disponible', 'cdb-empleado');
+            $card_html .= '</div>';
+            $card_html .= '<div class="cdb-empleado-card__score" aria-label="Puntuación total">'
+                        .  number_format_i18n($total, 0) . '</div>';
+            $card_html .= '</div>';
+        }
 
         $hero_html  = '<section class="cdb-empleado-hero">';
         $hero_html .= $card_html;
