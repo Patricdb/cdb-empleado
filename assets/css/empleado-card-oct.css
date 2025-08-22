@@ -1,5 +1,5 @@
 /* Layout 2 columnas con tamaño compartido */
-.cdb-vis-pair{ --vis-size:clamp(320px,32vw,520px); --vis-gap:clamp(16px,3vw,36px);
+.cdb-vis-pair{ --vis-size:clamp(260px,24vw,380px); --vis-gap:clamp(16px,3vw,36px);
   display:grid; grid-template-columns:1fr 1fr; gap:var(--vis-gap); align-items:start; justify-content:center; }
 .cdb-vis-pair__card, .cdb-vis-pair__chart{ display:flex; justify-content:center; }
 .cdb-vis-pair__card .cdb-card-oct{ width:var(--vis-size); aspect-ratio:1/1; }
