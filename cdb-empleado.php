@@ -336,6 +336,9 @@ new Cdb_Empleado_Plugin();
 // Activar nueva tarjeta en CPT
 add_filter( 'cdb_empleado_use_new_card', '__return_true', 99 );
 
+// Evita que cdb-grafica auto-inyecte la gráfica del empleado
+add_filter( 'cdb_grafica/auto_render_empleado_chart', '__return_false', 99 );
+
 // Estilos/JS: cargar nuevos y desactivar antiguos
 add_action( 'wp_enqueue_scripts', function () {
     wp_dequeue_style( 'cdb-perfil-empleado' );
