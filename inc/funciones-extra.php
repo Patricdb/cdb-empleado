@@ -142,24 +142,20 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
     $is_self = function_exists('cdb_obtener_empleado_id')
         && (int) cdb_obtener_empleado_id( get_current_user_id() ) === (int) $empleado_id;
 
-    if ( false === apply_filters( 'cdb_empleado_inyectar_grafica', true, $empleado_id ) ) {
+    if (false === apply_filters('cdb_empleado_inyectar_grafica', true, $empleado_id)) {
         $hero_html = '';
     } else {
+        $attrs        = array('id_suffix' => 'content');
+        $grafica_html = apply_filters('cdb_grafica_empleado_html', '', $empleado_id, $attrs);
+
         ob_start();
         cdb_empleado_render_profile_card( $empleado_id );
         $card_html = ob_get_clean();
 
-        $hero_html = $card_html;
-
-        if ( false === apply_filters( 'cdb_empleado_use_new_card', false ) ) {
-            $attrs        = array( 'id_suffix' => 'content' );
-            $grafica_html = apply_filters( 'cdb_grafica_empleado_html', '', $empleado_id, $attrs );
-
-            $hero_html  = '<section class="cdb-empleado-hero">';
-            $hero_html .= $card_html;
-            $hero_html .= '<div class="cdb-empleado-grafica-wrap">' . $grafica_html . '</div>';
-            $hero_html .= '</section>';
-        }
+        $hero_html  = '<section class="cdb-empleado-hero">';
+        $hero_html .= $card_html;
+        $hero_html .= '<div class="cdb-empleado-grafica-wrap">' . $grafica_html . '</div>';
+        $hero_html .= '</section>';
     }
 
     $calificacion_block = '';
