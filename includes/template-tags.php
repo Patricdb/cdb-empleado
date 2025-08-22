@@ -100,36 +100,5 @@ function cdb_empleado_get_rank_current( int $empleado_id ): ?int {
     return apply_filters( 'cdb_empleado_rank_current', $rank, $empleado_id );
 }
 
-/**
- * Renderiza la tarjeta de perfil del empleado.
- *
- * @param int $empleado_id Opcional. ID del empleado. Usa el post actual si es 0.
- */
-function cdb_empleado_render_profile_card( $empleado_id = 0 ) {
-    $empleado_id = $empleado_id ? (int) $empleado_id : get_the_ID();
-    if ( apply_filters( 'cdb_empleado_use_new_card', false ) ) {
-        // NUEVA tarjeta
-        $tpl = CDB_EMPLEADO_PLUGIN_DIR . 'templates/empleado-card-oct.php';
-        if ( file_exists( $tpl ) ) {
-            include $tpl; // usa $empleado_id dentro de la plantilla
-        }
-        return; // evita imprimir la tarjeta antigua
-    }
-
-    $empleado_author = (int) get_post_field( 'post_author', $empleado_id );
-    $disponible      = ( '1' === get_post_meta( $empleado_id, 'disponible', true ) );
-    $total           = (float) apply_filters( 'cdb_grafica_empleado_total', 0, $empleado_id );
-
-    echo '<div class="cdb-empleado-card">';
-    echo '<div class="cdb-empleado-card__avatar">' . get_avatar( $empleado_author, 96 ) . '</div>';
-    echo '<div class="cdb-empleado-card__name">' . esc_html( get_the_title( $empleado_id ) ) . '</div>';
-    echo '<div class="cdb-pill ' . ( $disponible ? 'ok' : 'off' ) . '">';
-    echo $disponible ? __( 'Disponible', 'cdb-empleado' ) : __( 'No disponible', 'cdb-empleado' );
-    echo '</div>';
-    echo '<div class="cdb-empleado-card__score" aria-label="Puntuación total">' .
-         number_format_i18n( $total, 0 ) . '</div>';
-    echo '</div>';
-}
-
 // Feature flag: nueva tarjeta desactivada por defecto.
 add_filter( 'cdb_empleado_use_new_card', '__return_false' );
