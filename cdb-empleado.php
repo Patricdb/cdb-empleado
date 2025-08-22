@@ -16,6 +16,15 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Evita el acceso directo al archivo
 }
 
+if ( ! defined( 'CDB_EMPLEADO_PLUGIN_DIR' ) ) {
+    define( 'CDB_EMPLEADO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+}
+if ( ! defined( 'CDB_EMPLEADO_PLUGIN_URL' ) ) {
+    define( 'CDB_EMPLEADO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+}
+
+require_once CDB_EMPLEADO_PLUGIN_DIR . 'inc/card-oct-helpers.php';
+
 /**
  * Clase principal del plugin CdB Empleado.
  */
@@ -31,6 +40,7 @@ class Cdb_Empleado_Plugin {
         require_once plugin_dir_path( __FILE__ ) . 'inc/permisos.php';
         require_once plugin_dir_path( __FILE__ ) . 'inc/funciones-extra.php';
         require_once plugin_dir_path( __FILE__ ) . 'includes/template-tags.php';
+        require_once plugin_dir_path( __FILE__ ) . 'includes/shortcodes.php';
 
         add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
         add_action( 'init', array( __CLASS__, 'registrar_cpt_empleado' ) );
@@ -323,11 +333,24 @@ register_deactivation_hook( __FILE__, array( 'Cdb_Empleado_Plugin', 'desactivar'
 // Instanciar el plugin.
 new Cdb_Empleado_Plugin();
 
-// Encolar estilos de la tarjeta octogonal solo cuando el flag esté activo.
-add_action('wp_enqueue_scripts', function(){
-  if ( apply_filters('cdb_empleado_use_new_card', false) ) {
-    wp_register_style('cdb-empleado-card-oct', plugins_url('assets/css/empleado-card-oct.css', __FILE__), [], '1.0');
-    wp_enqueue_style('cdb-empleado-card-oct');
-  }
-}, 20);
+// Fuerza el uso de la nueva tarjeta en el CPT empleado.
+add_filter( 'cdb_empleado_use_new_card', '__return_true', 99 );
+
+add_action( 'wp_enqueue_scripts', function () {
+    $use_new = apply_filters( 'cdb_empleado_use_new_card', false );
+
+    if ( $use_new ) {
+        // Desactiva estilos antiguos de la tarjeta clásica
+        wp_dequeue_style( 'cdb-perfil-empleado' );
+        wp_deregister_style( 'cdb-perfil-empleado' );
+
+        // Estilos de la tarjeta octogonal
+        wp_enqueue_style(
+            'cdb-empleado-card-oct',
+            CDB_EMPLEADO_PLUGIN_URL . 'assets/css/empleado-card-oct.css',
+            [],
+            '1.0.0'
+        );
+    }
+}, 20 );
 
