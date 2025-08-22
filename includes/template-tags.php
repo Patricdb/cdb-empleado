@@ -108,17 +108,12 @@ function cdb_empleado_get_rank_current( int $empleado_id ): ?int {
 function cdb_empleado_render_profile_card( $empleado_id = 0 ) {
     $empleado_id = $empleado_id ? (int) $empleado_id : get_the_ID();
     if ( apply_filters( 'cdb_empleado_use_new_card', false ) ) {
-        $empleado_id = get_the_ID();
-        echo '<section class="cdb-vis-pair" data-cdb-vis="pair">';
-          echo '<div class="cdb-vis-pair__card">';
-            include CDB_EMPLEADO_PLUGIN_DIR . 'templates/empleado-card-oct.php';
-          echo '</div>';
-          echo '<div class="cdb-vis-pair__chart">';
-            // La gráfica se inyectará desde cdb-grafica en el siguiente prompt
-            do_action( 'cdb_grafica/render_radar_empleado', $empleado_id );
-          echo '</div>';
-        echo '</section>';
-        return; // evita render legacy
+        // NUEVA tarjeta
+        $tpl = CDB_EMPLEADO_PLUGIN_DIR . 'templates/empleado-card-oct.php';
+        if ( file_exists( $tpl ) ) {
+            include $tpl; // usa $empleado_id dentro de la plantilla
+        }
+        return; // evita imprimir la tarjeta antigua
     }
 
     $empleado_author = (int) get_post_field( 'post_author', $empleado_id );

@@ -333,26 +333,24 @@ register_deactivation_hook( __FILE__, array( 'Cdb_Empleado_Plugin', 'desactivar'
 // Instanciar el plugin.
 new Cdb_Empleado_Plugin();
 
-// Activar nueva tarjeta en CPT
+// Fuerza el uso de la nueva tarjeta en el CPT empleado.
 add_filter( 'cdb_empleado_use_new_card', '__return_true', 99 );
 
-// Estilos/JS: cargar nuevos y desactivar antiguos
 add_action( 'wp_enqueue_scripts', function () {
-    wp_dequeue_style( 'cdb-perfil-empleado' );
-    wp_deregister_style( 'cdb-perfil-empleado' );
+    $use_new = apply_filters( 'cdb_empleado_use_new_card', false );
 
-    wp_enqueue_style(
-        'cdb-empleado-card-oct',
-        CDB_EMPLEADO_PLUGIN_URL . 'assets/css/empleado-card-oct.css',
-        [],
-        '1.1.0'
-    );
-    wp_enqueue_script(
-        'cdb-empleado-card-oct',
-        CDB_EMPLEADO_PLUGIN_URL . 'assets/js/empleado-card-oct.js',
-        [],
-        '1.0.0',
-        true
-    );
+    if ( $use_new ) {
+        // Desactiva estilos antiguos de la tarjeta clásica
+        wp_dequeue_style( 'cdb-perfil-empleado' );
+        wp_deregister_style( 'cdb-perfil-empleado' );
+
+        // Estilos de la tarjeta octogonal
+        wp_enqueue_style(
+            'cdb-empleado-card-oct',
+            CDB_EMPLEADO_PLUGIN_URL . 'assets/css/empleado-card-oct.css',
+            [],
+            '1.0.0'
+        );
+    }
 }, 20 );
 
