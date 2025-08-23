@@ -1,155 +1,16 @@
-:root{
-  /* Tamaño base y escalas */
-  --cdb8-size: clamp(300px, 90vw, 360px);
-  --cdb8-pad: calc(20px * (var(--cdb8-size) / 360));
-  --cdb8-gap: calc(14px * (var(--cdb8-size) / 360));
-  --cdb8-avatar: calc(160px * (var(--cdb8-size) / 360));
-  --cdb8-badge: calc(56px * (var(--cdb8-size) / 360));
-  /* Colores */
-  --cdb8-bg: #F4EFDF;
-  --cdb8-ink: #2B2B2B;
-  --cdb8-border: #00000014;
-  --cdb8-muted: #8E7E60;
-  /* Tipografía */
-  --cdb8-fs-name: clamp(16px, calc(var(--cdb8-size) * 0.065), 28px);
-  --cdb8-fs-label: clamp(10px, calc(var(--cdb8-size) * 0.035), 14px);
-  --cdb8-fs-rank: clamp(28px, calc(var(--cdb8-size) * 0.18), 64px);
-}
-
-/* --- Contenedor principal de la tarjeta --- */
+/* Tarjeta empleado (contorno + silueta en path SVG) */
 .cdb-empcard8{
-  width:min(var(--cdb8-size),100%);
-  aspect-ratio:1/1;
-  background:var(--cdb8-bg);
-  color:var(--cdb8-ink);
-  border:1.5px solid var(--cdb8-border);
-  border-radius:18px;
-  padding:var(--cdb8-pad);
-  box-shadow:0 8px 22px rgba(0,0,0,.06);
-  display:grid;
-  gap:var(--cdb8-gap);
-  grid-template-columns:1fr 1fr 1fr;
-  grid-template-rows:auto 1fr auto;
-  grid-template-areas:
-    "name   name   name"
-    "badges center rank"
-    "footer footer footer";
-  /* Octógono */
-  clip-path:polygon(10% 0,90% 0,100% 10%,100% 90%,90% 100%,10% 100%,0 90%,0 10%);
+  --paper:#f3eedf;
+  --ink:#5c564d;
+  width:100%;
+  aspect-ratio:888/874;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Helvetica Neue",Arial;
 }
-
-/* --- Áreas principales --- */
-.cdb-empcard8__name{
-  grid-area:name;
-  font-size:var(--cdb8-fs-name);
-  font-weight:600;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.cdb-empcard8__badges{
-  grid-area:badges;
-  display:grid;
-  grid-auto-flow:column;
-  grid-auto-columns:1fr;
-  align-items:center;
-  gap:calc(var(--cdb8-gap)*0.6);
-}
-.cdb-empcard8__badge{
-  width:var(--cdb8-badge);
-  height:var(--cdb8-badge);
-  border-radius:999px;
-  border:1px dashed var(--cdb8-border);
-  display:grid;
-  place-items:center;
-  font-weight:600;
-  color:#6b6b6b;
-}
-.cdb-empcard8__badge.is-empty{opacity:.7;}
-
-.cdb-empcard8__center{
-  grid-area:center;
-  display:grid;
-  place-items:center;
-}
-.cdb-empcard8__center svg{
-  width:var(--cdb8-avatar);
-  height:auto;
-  color:#6B6B6B;
-}
-
-.cdb-empcard8__rank{
-  grid-area:rank;
-  display:grid;
-  align-content:center;
-  justify-items:end;
-  text-align:right;
-}
-.cdb-empcard8__rank-label{
-  font-size:var(--cdb8-fs-label);
-  color:var(--cdb8-muted);
-  text-transform:uppercase;
-  letter-spacing:.06em;
-}
-.cdb-empcard8__rank-value{
-  font-size:var(--cdb8-fs-rank);
-  line-height:1;
-  font-weight:700;
-}
-
-/* --- Sección inferior --- */
-.cdb-empcard8__footer{
-  grid-area:footer;
-  display:grid;
-  gap:calc(var(--cdb8-gap)*0.8);
-}
-.cdb-empcard8__section-title{
-  font-size:var(--cdb8-fs-label);
-  color:var(--cdb8-muted);
-  text-transform:uppercase;
-  letter-spacing:.06em;
-}
-.cdb-empcard8__positions-list,
-.cdb-empcard8__groups-list{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:calc(var(--cdb8-gap)*0.5);
-  list-style:none;
-  padding:0;
-  margin:0;
-}
-.cdb-empcard8__pos{
-  display:grid;
-  place-items:center;
-  min-height:2.2em;
-  border:1px solid var(--cdb8-border);
-  border-radius:999px;
-  font-weight:600;
-}
-.cdb-empcard8__grp{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:.4em;
-  min-height:2.2em;
-  border:1px solid var(--cdb8-border);
-  border-radius:999px;
-  padding:0 .7em;
-}
-.cdb-empcard8__grp-code{font-weight:700;}
-.cdb-empcard8__grp-val{opacity:.9;}
-
-/* --- Accesibilidad --- */
-.screen-reader-text{
-  position:absolute !important;
-  height:1px;
-  width:1px;
-  overflow:hidden;
-  clip:rect(1px,1px,1px,1px);
-  white-space:nowrap;
-}
-
-/* --- Responsivo: mantiene 3×3 y solo escala --- */
-@media (max-width:420px){
-  :root{--cdb8-size:clamp(280px,96vw,320px);}
-}
+.cdb-empcard8 svg{width:100%;height:auto;display:block;}
+.cdb-empcard8 .t{fill:var(--ink);font-weight:800;letter-spacing:.06em;}
+.cdb-empcard8 .t--small{font-weight:700;letter-spacing:.12em;}
+.cdb-empcard8 .name{transform:translate(0,-8px);}
+.cdb-empcard8 .puesto{transform:translate(0,0);}
+.cdb-empcard8 .num{transform:translate(0,4px);}
