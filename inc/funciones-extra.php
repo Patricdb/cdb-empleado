@@ -197,20 +197,3 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
     return $content . $hero_html . $calificacion_block . $shortcode_output;
 }
 add_filter('the_content', 'cdb_inyectar_equipos_del_empleado_en_contenido');
-
-/**
- * Oculta el título redundante en la vista singular del CPT empleado.
- *
- * @param string $title El título del post.
- * @param int    $id    ID del post actual.
- *
- * @return string El título filtrado o vacío en single de empleado.
- */
-function cdb_empleado_hide_empleado_title( $title, $id ) {
-    if ( is_singular( 'empleado' ) && in_the_loop() && 'empleado' === get_post_type( $id ) ) {
-        return '';
-    }
-
-    return $title;
-}
-add_filter( 'the_title', 'cdb_empleado_hide_empleado_title', 10, 2 );
