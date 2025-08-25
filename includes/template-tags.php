@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return array
  */
 function cdb_empleado_get_card_data( int $empleado_id ): array {
-    $name         = get_the_author_meta( 'display_name', (int) get_post_field( 'post_author', $empleado_id ) );
+    $name         = get_the_title( $empleado_id );
     $availability = get_post_meta( $empleado_id, 'disponible', true );
     $total        = (float) cdb_grafica_get_empleado_total( $empleado_id );
 
