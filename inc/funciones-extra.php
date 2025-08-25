@@ -155,16 +155,20 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
             $tarjeta_oct = ob_get_clean();
             $card_html   = $tarjeta_oct;
         } else {
-            $empleado_author = (int) get_post_field('post_author', $empleado_id);
-            $disponible      = ('1' === get_post_meta($empleado_id, 'disponible', true));
-            $total           = (float) apply_filters('cdb_grafica_empleado_total', 0, $empleado_id);
+            $empleado_author   = (int) get_post_field('post_author', $empleado_id);
+            $disponible        = ('1' === get_post_meta($empleado_id, 'disponible', true));
+            $total             = (float) apply_filters('cdb_grafica_empleado_total', 0, $empleado_id);
+            $current_user      = wp_get_current_user();
+            $es_rol_empleado   = in_array('empleado', (array) $current_user->roles, true);
 
             $card_html  = '<div class="cdb-empleado-card">';
             $card_html .= '<div class="cdb-empleado-card__avatar">' . get_avatar($empleado_author, 96) . '</div>';
             $card_html .= '<div class="cdb-empleado-card__name">' . esc_html(get_the_title($empleado_id)) . '</div>';
-            $card_html .= '<div class="cdb-pill ' . ($disponible ? 'ok' : 'off') . '">';
-            $card_html .= $disponible ? __('Disponible', 'cdb-empleado') : __('No disponible', 'cdb-empleado');
-            $card_html .= '</div>';
+            if ( ! $es_rol_empleado ) {
+                $card_html .= '<div class="cdb-pill ' . ($disponible ? 'ok' : 'off') . '">';
+                $card_html .= $disponible ? __('Disponible', 'cdb-empleado') : __('No disponible', 'cdb-empleado');
+                $card_html .= '</div>';
+            }
             $card_html .= '<div class="cdb-empleado-card__score" aria-label="Puntuación total">'
                         .  number_format_i18n($total, 0) . '</div>';
             $card_html .= '</div>';
