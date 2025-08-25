@@ -165,9 +165,11 @@ function cdb_inyectar_equipos_del_empleado_en_contenido($content) {
             $card_html .= '<div class="cdb-empleado-card__avatar">' . get_avatar($empleado_author, 96) . '</div>';
             $card_html .= '<div class="cdb-empleado-card__name">' . esc_html(get_the_title($empleado_id)) . '</div>';
             if ( ! $es_rol_empleado ) {
-                $card_html .= '<div class="cdb-pill ' . ($disponible ? 'ok' : 'off') . '">';
-                $card_html .= $disponible ? __('Disponible', 'cdb-empleado') : __('No disponible', 'cdb-empleado');
-                $card_html .= '</div>';
+                $card_html .= '<div class="cdb-empleado-card__estado">';
+                $card_html .= '<strong>' . esc_html__( 'Estado:', 'cdb-empleado' ) . '</strong> ';
+                $card_html .= '<span class="cdb-pill ' . ( $disponible ? 'ok' : 'off' ) . '">';
+                $card_html .= $disponible ? __( 'Disponible', 'cdb-empleado' ) : __( 'No disponible', 'cdb-empleado' );
+                $card_html .= '</span></div>';
             }
             $card_html .= '<div class="cdb-empleado-card__score" aria-label="Puntuación total">'
                         .  number_format_i18n($total, 0) . '</div>';
