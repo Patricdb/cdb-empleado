@@ -121,6 +121,32 @@ function cdb_empleado_registrar_ajustes_estilos() {
 add_action( 'admin_init', 'cdb_empleado_registrar_ajustes_estilos' );
 
 /**
+ * Registrar ajustes de rendimiento.
+ */
+function cdb_empleado_registrar_ajustes_rendimiento() {
+    register_setting( 'cdb_empleado_rendimiento', 'rank_ttl', array(
+        'sanitize_callback' => 'absint',
+        'default'           => 600,
+    ) );
+
+    add_settings_section(
+        'cdb_empleado_rendimiento_section',
+        __( 'Opciones de rendimiento', 'cdb-empleado' ),
+        '__return_false',
+        'cdb-empleado-rendimiento'
+    );
+
+    add_settings_field(
+        'rank_ttl',
+        __( 'TTL de ranking (segundos)', 'cdb-empleado' ),
+        'cdb_empleado_campo_rank_ttl',
+        'cdb-empleado-rendimiento',
+        'cdb_empleado_rendimiento_section'
+    );
+}
+add_action( 'admin_init', 'cdb_empleado_registrar_ajustes_rendimiento' );
+
+/**
  * Sanitizar valores de checkbox.
  *
  * @param mixed $valor Valor enviado desde el formulario.
@@ -181,6 +207,14 @@ function cdb_empleado_campo_tarjeta_oct_bg() {
     $fin = get_option( 'tarjeta_oct_bg_end', '#efe1b4' );
     echo '<input type="color" name="tarjeta_oct_bg_start" value="' . esc_attr( $ini ) . '" /> ';
     echo '<input type="color" name="tarjeta_oct_bg_end" value="' . esc_attr( $fin ) . '" />';
+}
+
+/**
+ * Campo numérico para el ajuste rank_ttl.
+ */
+function cdb_empleado_campo_rank_ttl() {
+    $valor = get_option( 'rank_ttl', 600 );
+    echo '<input type="number" name="rank_ttl" value="' . esc_attr( $valor ) . '" min="0" step="1" />';
 }
 
 /**
@@ -266,6 +300,24 @@ function cdb_empleado_pagina_estilos() {
 }
 
 /**
+ * Render de la página de ajustes de rendimiento.
+ */
+function cdb_empleado_pagina_rendimiento() {
+    ?>
+    <div class="wrap">
+        <h1><?php esc_html_e( 'Ajustes de rendimiento', 'cdb-empleado' ); ?></h1>
+        <form action="options.php" method="post">
+            <?php
+            settings_fields( 'cdb_empleado_rendimiento' );
+            do_settings_sections( 'cdb-empleado-rendimiento' );
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
+
+/**
  * Registrar el menú y submenú de ajustes.
  */
 function cdb_empleado_registrar_menu() {
@@ -294,6 +346,15 @@ function cdb_empleado_registrar_menu() {
         'cdb-empleado-estilos',
         'cdb_empleado_pagina_estilos'
     );
+
+    add_submenu_page(
+        'cdb-empleado',
+        __( 'Rendimiento', 'cdb-empleado' ),
+        __( 'Rendimiento', 'cdb-empleado' ),
+        'manage_options',
+        'cdb-empleado-rendimiento',
+        'cdb_empleado_pagina_rendimiento'
+    );
 }
 add_action( 'admin_menu', 'cdb_empleado_registrar_menu' );
 
@@ -317,3 +378,11 @@ function cdb_empleado_opcion_usar_tarjeta_oct() {
     return (bool) get_option( 'usar_tarjeta_oct', 0 );
 }
 add_filter( 'cdb_empleado_use_new_card', 'cdb_empleado_opcion_usar_tarjeta_oct', 20 );
+
+/**
+ * Filtro para TTL del ranking según ajuste.
+ */
+function cdb_empleado_opcion_rank_ttl() {
+    return (int) get_option( 'rank_ttl', 600 );
+}
+add_filter( 'cdb_empleado_rank_ttl', 'cdb_empleado_opcion_rank_ttl' );
