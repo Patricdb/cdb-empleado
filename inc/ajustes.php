@@ -186,6 +186,44 @@ function cdb_empleado_registrar_ajustes_roles() {
 add_action( 'admin_init', 'cdb_empleado_registrar_ajustes_roles' );
 
 /**
+ * Registrar ajustes de metacampos.
+ */
+function cdb_empleado_registrar_ajustes_metacampos() {
+    register_setting( 'cdb_empleado_metacampos', 'label_disponible', array(
+        'sanitize_callback' => 'sanitize_text_field',
+        'default'           => 'Disponible',
+    ) );
+    register_setting( 'cdb_empleado_metacampos', 'default_disponible', array(
+        'sanitize_callback' => 'cdb_empleado_sanitizar_checkbox',
+        'default'           => 1,
+    ) );
+
+    add_settings_section(
+        'cdb_empleado_metacampos_section',
+        __( 'Metacampo Disponible', 'cdb-empleado' ),
+        '__return_false',
+        'cdb-empleado-metacampos'
+    );
+
+    add_settings_field(
+        'label_disponible',
+        __( 'Etiqueta personalizada', 'cdb-empleado' ),
+        'cdb_empleado_campo_label_disponible',
+        'cdb-empleado-metacampos',
+        'cdb_empleado_metacampos_section'
+    );
+
+    add_settings_field(
+        'default_disponible',
+        __( 'Valor por defecto', 'cdb-empleado' ),
+        'cdb_empleado_campo_default_disponible',
+        'cdb-empleado-metacampos',
+        'cdb_empleado_metacampos_section'
+    );
+}
+add_action( 'admin_init', 'cdb_empleado_registrar_ajustes_metacampos' );
+
+/**
  * Sanitizar valores de checkbox.
  *
  * @param mixed $valor Valor enviado desde el formulario.
@@ -309,6 +347,25 @@ function cdb_empleado_campo_selector_roles() {
 }
 
 /**
+ * Campo de texto para la etiqueta del metacampo disponible.
+ */
+function cdb_empleado_campo_label_disponible() {
+    $valor = get_option( 'label_disponible', 'Disponible' );
+    echo '<input type="text" name="label_disponible" value="' . esc_attr( $valor ) . '" />';
+}
+
+/**
+ * Campo select para el valor por defecto del metacampo disponible.
+ */
+function cdb_empleado_campo_default_disponible() {
+    $valor = get_option( 'default_disponible', 1 );
+    echo '<select name="default_disponible">';
+    echo '<option value="1" ' . selected( $valor, 1, false ) . '>' . esc_html__( 'Sí', 'cdb-empleado' ) . '</option>';
+    echo '<option value="0" ' . selected( $valor, 0, false ) . '>' . esc_html__( 'No', 'cdb-empleado' ) . '</option>';
+    echo '</select>';
+}
+
+/**
  * Opciones de fuentes disponibles.
  */
 function cdb_empleado_fuentes_disponibles() {
@@ -391,6 +448,24 @@ function cdb_empleado_pagina_estilos() {
 }
 
 /**
+ * Render de la página de ajustes de metacampos.
+ */
+function cdb_empleado_pagina_metacampos() {
+    ?>
+    <div class="wrap">
+        <h1><?php esc_html_e( 'Metacampos', 'cdb-empleado' ); ?></h1>
+        <form action="options.php" method="post">
+            <?php
+            settings_fields( 'cdb_empleado_metacampos' );
+            do_settings_sections( 'cdb-empleado-metacampos' );
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
+
+/**
  * Render de la página de ajustes de rendimiento.
  */
 function cdb_empleado_pagina_rendimiento() {
@@ -454,6 +529,15 @@ function cdb_empleado_registrar_menu() {
         'manage_options',
         'cdb-empleado-estilos',
         'cdb_empleado_pagina_estilos'
+    );
+
+    add_submenu_page(
+        'cdb-empleado',
+        __( 'Metacampos', 'cdb-empleado' ),
+        __( 'Metacampos', 'cdb-empleado' ),
+        'manage_options',
+        'cdb-empleado-metacampos',
+        'cdb_empleado_pagina_metacampos'
     );
 
     add_submenu_page(

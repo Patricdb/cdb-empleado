@@ -27,15 +27,19 @@ add_action('add_meta_boxes', 'cdb_empleado_registrar_metacampos');
  */
 function cdb_empleado_mostrar_metacampos($post) {
     $disponible = get_post_meta($post->ID, 'disponible', true);
-    
+    if ('' === $disponible) {
+        $disponible = (string) get_option('default_disponible', 1);
+    }
+    $label = get_option('label_disponible', 'Disponible');
+
     wp_nonce_field('cdb_empleado_guardar_metacampos', 'cdb_empleado_nonce');
 
     ?>
     <p>
-        <label for="disponible"><strong>Disponible:</strong></label>
+        <label for="disponible"><strong><?php echo esc_html($label); ?>:</strong></label>
         <select name="disponible" id="disponible">
-            <option value="1" <?php selected($disponible, '1'); ?>>Sí</option>
-            <option value="0" <?php selected($disponible, '0'); ?>>No</option>
+            <option value="1" <?php selected($disponible, '1'); ?>><?php esc_html_e('Sí', 'cdb-empleado'); ?></option>
+            <option value="0" <?php selected($disponible, '0'); ?>><?php esc_html_e('No', 'cdb-empleado'); ?></option>
         </select>
     </p>
     <?php
