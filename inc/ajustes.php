@@ -583,14 +583,22 @@ function cdb_empleado_pagina_roles() {
 }
 
 /**
- * Render de la página de integraciones.
+ * Render de la página de shortcodes.
  */
-function cdb_empleado_pagina_integraciones() {
+function cdb_empleado_pagina_shortcodes() {
+    $shortcodes = array(
+        array(
+            'tag'       => 'equipos_del_empleado',
+            'atts'      => array(
+                'empleado_id' => __( 'ID del empleado (opcional; usa el post actual si se omite)', 'cdb-empleado' ),
+            ),
+            'desc'      => __( 'Lista equipos y posiciones del empleado consultando ${prefix}cdb_experiencia.', 'cdb-empleado' ),
+            'example'   => '[equipos_del_empleado empleado_id="15"]',
+        ),
+    );
     ?>
     <div class="wrap">
-        <h1><?php esc_html_e( 'Integraciones', 'cdb-empleado' ); ?></h1>
-
-        <h2><?php esc_html_e( 'Shortcodes', 'cdb-empleado' ); ?></h2>
+        <h1><?php esc_html_e( 'Shortcodes', 'cdb-empleado' ); ?></h1>
         <table class="widefat striped">
             <thead>
                 <tr>
@@ -601,14 +609,50 @@ function cdb_empleado_pagina_integraciones() {
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><code>equipos_del_empleado</code></td>
-                    <td><code>empleado_id</code> (int, <?php esc_html_e( 'opcional; por defecto el post ID', 'cdb-empleado' ); ?>)</td>
-                    <td><?php esc_html_e( 'Lista equipos y posiciones del empleado consultando ${prefix}cdb_experiencia.', 'cdb-empleado' ); ?></td>
-                    <td><code>[equipos_del_empleado empleado_id="15"]</code></td>
-                </tr>
+                <?php foreach ( $shortcodes as $sc ) : ?>
+                    <tr>
+                        <td><code><?php echo esc_html( $sc['tag'] ); ?></code></td>
+                        <td>
+                            <?php foreach ( $sc['atts'] as $att => $label ) : ?>
+                                <code><?php echo esc_html( $att ); ?></code> - <?php echo esc_html( $label ); ?><br />
+                            <?php endforeach; ?>
+                        </td>
+                        <td><?php echo esc_html( $sc['desc'] ); ?></td>
+                        <td>
+                            <code><?php echo esc_html( $sc['example'] ); ?></code>
+                            <button type="button" class="button cdb-copy" data-copy="<?php echo esc_attr( $sc['example'] ); ?>">
+                                <?php esc_html_e( 'Copiar', 'cdb-empleado' ); ?>
+                            </button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
+        <script>
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('cdb-copy')) {
+                navigator.clipboard.writeText(e.target.dataset.copy);
+                const original = e.target.textContent;
+                e.target.textContent = '<?php echo esc_js( __( 'Copiado!', 'cdb-empleado' ) ); ?>';
+                setTimeout(function(){ e.target.textContent = original; }, 2000);
+            }
+        });
+        </script>
+    </div>
+    <?php
+}
+
+/**
+ * Render de la página de integraciones.
+ */
+function cdb_empleado_pagina_integraciones() {
+    ?>
+    <div class="wrap">
+        <h1><?php esc_html_e( 'Integraciones', 'cdb-empleado' ); ?></h1>
+
+        <p>
+            <?php esc_html_e( 'Consulta la sección de Shortcodes para ejemplos y uso de códigos abreviados.', 'cdb-empleado' ); ?>
+        </p>
 
         <h2><?php esc_html_e( 'Hooks y filtros', 'cdb-empleado' ); ?></h2>
         <table class="widefat striped">
@@ -704,9 +748,7 @@ function cdb_empleado_pagina_integraciones() {
 
         <p>
             <?php esc_html_e( 'Más información en:', 'cdb-empleado' ); ?>
-            <a href="https://github.com/proyectocdb/cdb-empleado#shortcodes" target="_blank"><?php esc_html_e( 'README – Shortcodes', 'cdb-empleado' ); ?></a>,
             <a href="https://github.com/proyectocdb/cdb-empleado#hooks-y-filtros" target="_blank"><?php esc_html_e( 'README – Hooks y filtros', 'cdb-empleado' ); ?></a>,
-            <a href="https://developer.wordpress.org/plugins/shortcodes/" target="_blank"><?php esc_html_e( 'Shortcodes en WordPress', 'cdb-empleado' ); ?></a>,
             <a href="https://developer.wordpress.org/plugins/hooks/" target="_blank"><?php esc_html_e( 'Hooks en WordPress', 'cdb-empleado' ); ?></a>.
         </p>
     </div>
@@ -777,6 +819,15 @@ function cdb_empleado_registrar_menu() {
         'manage_options',
         'cdb-empleado-roles',
         'cdb_empleado_pagina_roles'
+    );
+
+    add_submenu_page(
+        'cdb-empleado',
+        __( 'Shortcodes', 'cdb-empleado' ),
+        __( 'Shortcodes', 'cdb-empleado' ),
+        'manage_options',
+        'cdb-empleado-shortcodes',
+        'cdb_empleado_pagina_shortcodes'
     );
 
     add_submenu_page(
