@@ -155,8 +155,8 @@ function cdb_empleado_registrar_ajustes_roles() {
         'default'           => array(),
     ) );
 
-    register_setting( 'cdb_empleado_roles', 'cdb_empleado_selector_roles', array(
-        'sanitize_callback' => 'cdb_empleado_sanitizar_roles_selector',
+    register_setting( 'cdb_empleado_roles', 'role_autores', array(
+        'sanitize_callback' => 'cdb_empleado_sanitizar_role_autores',
         'default'           => array( 'administrator', 'editor', 'author', 'empleado' ),
     ) );
 
@@ -176,9 +176,9 @@ function cdb_empleado_registrar_ajustes_roles() {
     );
 
     add_settings_field(
-        'cdb_empleado_selector_roles',
+        'role_autores',
         __( 'Roles permitidos en selector', 'cdb-empleado' ),
-        'cdb_empleado_campo_selector_roles',
+        'cdb_empleado_campo_role_autores',
         'cdb-empleado-roles',
         'cdb_empleado_roles_section'
     );
@@ -262,7 +262,7 @@ function cdb_empleado_sanitizar_caps( $valor ) {
  * @param array $valor Roles enviados.
  * @return array Roles válidos.
  */
-function cdb_empleado_sanitizar_roles_selector( $valor ) {
+function cdb_empleado_sanitizar_role_autores( $valor ) {
     global $wp_roles;
     $todos = array_keys( $wp_roles->roles );
     $valor = is_array( $valor ) ? $valor : array();
@@ -337,13 +337,15 @@ function cdb_empleado_campo_extra_caps() {
 /**
  * Campo para seleccionar roles permitidos en el selector de autores.
  */
-function cdb_empleado_campo_selector_roles() {
-    $valor = (array) get_option( 'cdb_empleado_selector_roles', array( 'administrator', 'editor', 'author', 'empleado' ) );
+function cdb_empleado_campo_role_autores() {
+    $valor = (array) get_option( 'role_autores', array( 'administrator', 'editor', 'author', 'empleado' ) );
     global $wp_roles;
 
+    echo '<select name="role_autores[]" multiple="multiple" size="5">';
     foreach ( $wp_roles->roles as $role_key => $data ) {
-        echo '<label><input type="checkbox" name="cdb_empleado_selector_roles[]" value="' . esc_attr( $role_key ) . '" ' . checked( in_array( $role_key, $valor, true ), true, false ) . ' /> ' . esc_html( $data['name'] ) . '</label><br />';
+        echo '<option value="' . esc_attr( $role_key ) . '" ' . selected( in_array( $role_key, $valor, true ), true, false ) . '>' . esc_html( $data['name'] ) . '</option>';
     }
+    echo '</select>';
 }
 
 /**
