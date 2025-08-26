@@ -56,12 +56,15 @@ Plugin de WordPress que registra el tipo de contenido **Empleado**, su rol asoci
 - Meta keys: `_cdb_empleado_year`, `_cdb_empleado_equipo`
 
 ### Auto-inyección en `single` de empleado
-Inserta **tarjeta + gráfica + bloque de calificación + listado de equipos**.  
+Inserta **tarjeta + gráfica + bloque de calificación + listado de equipos**.
 Para desactivar:
 ```php
 add_filter('cdb_empleado_inyectar_grafica', '__return_false');
 add_filter('cdb_empleado_inyectar_calificacion', '__return_false');
 ```
+
+### Rendimiento
+- Submenú **Rendimiento**: define el TTL de ranking (`rank_ttl` en segundos, predeterminado `600`).
 
 ## Uso
 ### Shortcode principal
