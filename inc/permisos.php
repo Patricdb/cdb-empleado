@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function cdb_mostrar_todos_los_autores( $query_args, $r ) {
     $query_args['who'] = ''; // Elimina la restricción de solo autores
 
-    $roles = (array) get_option( 'role_autores', array( 'administrator', 'editor', 'author', 'empleado' ) );
+    $roles = (array) get_option( 'cdb_empleado_selector_roles', array( 'administrator', 'editor', 'author', 'empleado' ) );
     if ( ! empty( $roles ) ) {
         $query_args['role__in'] = $roles;
     }
