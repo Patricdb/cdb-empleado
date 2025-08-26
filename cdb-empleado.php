@@ -325,10 +325,25 @@ register_deactivation_hook( __FILE__, array( 'Cdb_Empleado_Plugin', 'desactivar'
 new Cdb_Empleado_Plugin();
 
 // Encolar estilos de la tarjeta octogonal solo cuando el flag esté activo.
-add_action('wp_enqueue_scripts', function(){
-  if ( apply_filters('cdb_empleado_use_new_card', false) ) {
-    wp_register_style('cdb-empleado-card-oct', plugins_url('assets/css/empleado-card-oct.css', __FILE__), [], '1.0');
-    wp_enqueue_style('cdb-empleado-card-oct');
+add_action( 'wp_enqueue_scripts', function() {
+  if ( apply_filters( 'cdb_empleado_use_new_card', false ) ) {
+    wp_register_style( 'cdb-empleado-card-oct', plugins_url( 'assets/css/empleado-card-oct.css', __FILE__ ), [], '1.0' );
+    wp_enqueue_style( 'cdb-empleado-card-oct' );
+
+    $ink      = get_option( 'tarjeta_oct_ink', '#66604e' );
+    $bg_start = get_option( 'tarjeta_oct_bg_start', '#f5e8c8' );
+    $bg_end   = get_option( 'tarjeta_oct_bg_end', '#efe1b4' );
+
+    $fonts    = function_exists( 'cdb_empleado_fuentes_disponibles' ) ? cdb_empleado_fuentes_disponibles() : array();
+    $body_key = get_option( 'tarjeta_oct_font_body', 'sans' );
+    $head_key = get_option( 'tarjeta_oct_font_heading', 'sans' );
+    $body_ff  = $fonts[ $body_key ]['stack'] ?? $fonts['sans']['stack'] ?? 'ui-sans-serif,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif';
+    $head_ff  = $fonts[ $head_key ]['stack'] ?? $body_ff;
+
+    $css  = '.cdb-empcard8{--ink:' . $ink . ';background:linear-gradient(180deg,' . $bg_start . ',' . $bg_end . ');font-family:' . $body_ff . ';}';
+    $css .= '.cdb-empcard8 .t{font-family:' . $head_ff . ';}';
+
+    wp_add_inline_style( 'cdb-empleado-card-oct', $css );
   }
-}, 20);
+}, 20 );
 

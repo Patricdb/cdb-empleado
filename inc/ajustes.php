@@ -43,6 +43,84 @@ function cdb_empleado_registrar_ajustes() {
 add_action( 'admin_init', 'cdb_empleado_registrar_ajustes' );
 
 /**
+ * Registrar ajustes de estilos de la tarjeta.
+ */
+function cdb_empleado_registrar_ajustes_estilos() {
+    register_setting( 'cdb_empleado_estilos', 'usar_tarjeta_oct', array(
+        'sanitize_callback' => 'cdb_empleado_sanitizar_checkbox',
+        'default'           => 0,
+    ) );
+    register_setting( 'cdb_empleado_estilos', 'tarjeta_oct_ink', array(
+        'sanitize_callback' => 'sanitize_hex_color',
+        'default'           => '#66604e',
+    ) );
+    register_setting( 'cdb_empleado_estilos', 'tarjeta_oct_bg_start', array(
+        'sanitize_callback' => 'sanitize_hex_color',
+        'default'           => '#f5e8c8',
+    ) );
+    register_setting( 'cdb_empleado_estilos', 'tarjeta_oct_bg_end', array(
+        'sanitize_callback' => 'sanitize_hex_color',
+        'default'           => '#efe1b4',
+    ) );
+    register_setting( 'cdb_empleado_estilos', 'tarjeta_oct_font_body', array(
+        'sanitize_callback' => 'cdb_empleado_sanitizar_fuente',
+        'default'           => 'sans',
+    ) );
+    register_setting( 'cdb_empleado_estilos', 'tarjeta_oct_font_heading', array(
+        'sanitize_callback' => 'cdb_empleado_sanitizar_fuente',
+        'default'           => 'sans',
+    ) );
+
+    add_settings_section(
+        'cdb_empleado_estilos_section',
+        __( 'Tarjeta', 'cdb-empleado' ),
+        '__return_false',
+        'cdb-empleado-estilos'
+    );
+
+    add_settings_field(
+        'usar_tarjeta_oct',
+        __( 'Usar tarjeta octogonal', 'cdb-empleado' ),
+        'cdb_empleado_campo_usar_tarjeta_oct',
+        'cdb-empleado-estilos',
+        'cdb_empleado_estilos_section'
+    );
+
+    add_settings_field(
+        'tarjeta_oct_ink',
+        __( 'Color de tinta', 'cdb-empleado' ),
+        'cdb_empleado_campo_tarjeta_oct_ink',
+        'cdb-empleado-estilos',
+        'cdb_empleado_estilos_section'
+    );
+
+    add_settings_field(
+        'tarjeta_oct_bg',
+        __( 'Gradiente de fondo', 'cdb-empleado' ),
+        'cdb_empleado_campo_tarjeta_oct_bg',
+        'cdb-empleado-estilos',
+        'cdb_empleado_estilos_section'
+    );
+
+    add_settings_field(
+        'tarjeta_oct_font_body',
+        __( 'Fuente principal', 'cdb-empleado' ),
+        'cdb_empleado_campo_tarjeta_oct_font_body',
+        'cdb-empleado-estilos',
+        'cdb_empleado_estilos_section'
+    );
+
+    add_settings_field(
+        'tarjeta_oct_font_heading',
+        __( 'Fuente de encabezados', 'cdb-empleado' ),
+        'cdb_empleado_campo_tarjeta_oct_font_heading',
+        'cdb-empleado-estilos',
+        'cdb_empleado_estilos_section'
+    );
+}
+add_action( 'admin_init', 'cdb_empleado_registrar_ajustes_estilos' );
+
+/**
  * Sanitizar valores de checkbox.
  *
  * @param mixed $valor Valor enviado desde el formulario.
@@ -50,6 +128,17 @@ add_action( 'admin_init', 'cdb_empleado_registrar_ajustes' );
  */
 function cdb_empleado_sanitizar_checkbox( $valor ) {
     return ! empty( $valor ) ? 1 : 0;
+}
+
+/**
+ * Sanitizar selección de fuente.
+ *
+ * @param string $valor Valor enviado.
+ * @return string Clave de fuente permitida.
+ */
+function cdb_empleado_sanitizar_fuente( $valor ) {
+    $permitidas = array( 'sans', 'serif', 'mono' );
+    return in_array( $valor, $permitidas, true ) ? $valor : 'sans';
 }
 
 /**
@@ -69,6 +158,78 @@ function cdb_empleado_campo_inyectar_calificacion() {
 }
 
 /**
+ * Campo checkbox para el ajuste usar_tarjeta_oct.
+ */
+function cdb_empleado_campo_usar_tarjeta_oct() {
+    $valor = get_option( 'usar_tarjeta_oct', 0 );
+    echo '<input type="checkbox" name="usar_tarjeta_oct" value="1" ' . checked( 1, $valor, false ) . ' />';
+}
+
+/**
+ * Campo color para la variable --ink.
+ */
+function cdb_empleado_campo_tarjeta_oct_ink() {
+    $valor = get_option( 'tarjeta_oct_ink', '#66604e' );
+    echo '<input type="color" name="tarjeta_oct_ink" value="' . esc_attr( $valor ) . '" />';
+}
+
+/**
+ * Campo para gradiente de fondo.
+ */
+function cdb_empleado_campo_tarjeta_oct_bg() {
+    $ini = get_option( 'tarjeta_oct_bg_start', '#f5e8c8' );
+    $fin = get_option( 'tarjeta_oct_bg_end', '#efe1b4' );
+    echo '<input type="color" name="tarjeta_oct_bg_start" value="' . esc_attr( $ini ) . '" /> ';
+    echo '<input type="color" name="tarjeta_oct_bg_end" value="' . esc_attr( $fin ) . '" />';
+}
+
+/**
+ * Opciones de fuentes disponibles.
+ */
+function cdb_empleado_fuentes_disponibles() {
+    return array(
+        'sans' => array(
+            'label' => __( 'Sans serif', 'cdb-empleado' ),
+            'stack' => 'ui-sans-serif,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif',
+        ),
+        'serif' => array(
+            'label' => __( 'Serif', 'cdb-empleado' ),
+            'stack' => 'ui-serif,Georgia,Cambria,"Times New Roman",Times,serif',
+        ),
+        'mono' => array(
+            'label' => __( 'Monospace', 'cdb-empleado' ),
+            'stack' => 'ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace',
+        ),
+    );
+}
+
+/**
+ * Campo select para fuente principal.
+ */
+function cdb_empleado_campo_tarjeta_oct_font_body() {
+    $valor   = get_option( 'tarjeta_oct_font_body', 'sans' );
+    $fuentes = cdb_empleado_fuentes_disponibles();
+    echo '<select name="tarjeta_oct_font_body">';
+    foreach ( $fuentes as $key => $data ) {
+        echo '<option value="' . esc_attr( $key ) . '" ' . selected( $valor, $key, false ) . '>' . esc_html( $data['label'] ) . '</option>';
+    }
+    echo '</select>';
+}
+
+/**
+ * Campo select para fuente de encabezados.
+ */
+function cdb_empleado_campo_tarjeta_oct_font_heading() {
+    $valor   = get_option( 'tarjeta_oct_font_heading', 'sans' );
+    $fuentes = cdb_empleado_fuentes_disponibles();
+    echo '<select name="tarjeta_oct_font_heading">';
+    foreach ( $fuentes as $key => $data ) {
+        echo '<option value="' . esc_attr( $key ) . '" ' . selected( $valor, $key, false ) . '>' . esc_html( $data['label'] ) . '</option>';
+    }
+    echo '</select>';
+}
+
+/**
  * Render de la página de ajustes generales.
  */
 function cdb_empleado_pagina_ajustes() {
@@ -79,6 +240,24 @@ function cdb_empleado_pagina_ajustes() {
             <?php
             settings_fields( 'cdb_empleado_general' );
             do_settings_sections( 'cdb-empleado' );
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
+
+/**
+ * Render de la página de ajustes de estilos.
+ */
+function cdb_empleado_pagina_estilos() {
+    ?>
+    <div class="wrap">
+        <h1><?php esc_html_e( 'Estilos de tarjeta', 'cdb-empleado' ); ?></h1>
+        <form action="options.php" method="post">
+            <?php
+            settings_fields( 'cdb_empleado_estilos' );
+            do_settings_sections( 'cdb-empleado-estilos' );
             submit_button();
             ?>
         </form>
@@ -106,6 +285,15 @@ function cdb_empleado_registrar_menu() {
         'cdb-empleado',
         'cdb_empleado_pagina_ajustes'
     );
+
+    add_submenu_page(
+        'cdb-empleado',
+        __( 'Estilos', 'cdb-empleado' ),
+        __( 'Estilos', 'cdb-empleado' ),
+        'manage_options',
+        'cdb-empleado-estilos',
+        'cdb_empleado_pagina_estilos'
+    );
 }
 add_action( 'admin_menu', 'cdb_empleado_registrar_menu' );
 
@@ -121,3 +309,11 @@ function cdb_empleado_opcion_inyectar_calificacion() {
     return (bool) get_option( 'inyectar_calificacion', 1 );
 }
 add_filter( 'cdb_empleado_inyectar_calificacion', 'cdb_empleado_opcion_inyectar_calificacion' );
+
+/**
+ * Filtro para usar tarjeta octogonal según ajuste.
+ */
+function cdb_empleado_opcion_usar_tarjeta_oct() {
+    return (bool) get_option( 'usar_tarjeta_oct', 0 );
+}
+add_filter( 'cdb_empleado_use_new_card', 'cdb_empleado_opcion_usar_tarjeta_oct', 20 );
