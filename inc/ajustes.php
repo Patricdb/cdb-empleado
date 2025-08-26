@@ -782,7 +782,9 @@ function cdb_empleado_registrar_menu() {
         __( 'CdB Empleado', 'cdb-empleado' ),
         'manage_options',
         'cdb-empleado',
-        'cdb_empleado_pagina_ajustes'
+        'cdb_empleado_pagina_ajustes',
+        '',
+        4
     );
 
     add_submenu_page(
