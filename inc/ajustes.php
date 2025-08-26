@@ -147,6 +147,45 @@ function cdb_empleado_registrar_ajustes_rendimiento() {
 add_action( 'admin_init', 'cdb_empleado_registrar_ajustes_rendimiento' );
 
 /**
+ * Registrar ajustes de roles y capacidades.
+ */
+function cdb_empleado_registrar_ajustes_roles() {
+    register_setting( 'cdb_empleado_roles', 'cdb_empleado_extra_caps', array(
+        'sanitize_callback' => 'cdb_empleado_sanitizar_caps',
+        'default'           => array(),
+    ) );
+
+    register_setting( 'cdb_empleado_roles', 'cdb_empleado_selector_roles', array(
+        'sanitize_callback' => 'cdb_empleado_sanitizar_roles_selector',
+        'default'           => array( 'administrator', 'editor', 'author', 'empleado' ),
+    ) );
+
+    add_settings_section(
+        'cdb_empleado_roles_section',
+        __( 'Roles y capacidades', 'cdb-empleado' ),
+        '__return_false',
+        'cdb-empleado-roles'
+    );
+
+    add_settings_field(
+        'cdb_empleado_extra_caps',
+        __( 'Capacidades extra', 'cdb-empleado' ),
+        'cdb_empleado_campo_extra_caps',
+        'cdb-empleado-roles',
+        'cdb_empleado_roles_section'
+    );
+
+    add_settings_field(
+        'cdb_empleado_selector_roles',
+        __( 'Roles permitidos en selector', 'cdb-empleado' ),
+        'cdb_empleado_campo_selector_roles',
+        'cdb-empleado-roles',
+        'cdb_empleado_roles_section'
+    );
+}
+add_action( 'admin_init', 'cdb_empleado_registrar_ajustes_roles' );
+
+/**
  * Sanitizar valores de checkbox.
  *
  * @param mixed $valor Valor enviado desde el formulario.
@@ -165,6 +204,31 @@ function cdb_empleado_sanitizar_checkbox( $valor ) {
 function cdb_empleado_sanitizar_fuente( $valor ) {
     $permitidas = array( 'sans', 'serif', 'mono' );
     return in_array( $valor, $permitidas, true ) ? $valor : 'sans';
+}
+
+/**
+ * Sanitizar capacidades extra del rol empleado.
+ *
+ * @param array $valor Capacidades enviadas.
+ * @return array Capacidades permitidas.
+ */
+function cdb_empleado_sanitizar_caps( $valor ) {
+    $permitidas = array( 'edit_posts', 'upload_files' );
+    $valor      = is_array( $valor ) ? $valor : array();
+    return array_values( array_intersect( $valor, $permitidas ) );
+}
+
+/**
+ * Sanitizar roles permitidos en el selector de autores.
+ *
+ * @param array $valor Roles enviados.
+ * @return array Roles válidos.
+ */
+function cdb_empleado_sanitizar_roles_selector( $valor ) {
+    global $wp_roles;
+    $todos = array_keys( $wp_roles->roles );
+    $valor = is_array( $valor ) ? $valor : array();
+    return array_values( array_intersect( $valor, $todos ) );
 }
 
 /**
@@ -215,6 +279,33 @@ function cdb_empleado_campo_tarjeta_oct_bg() {
 function cdb_empleado_campo_rank_ttl() {
     $valor = get_option( 'rank_ttl', 600 );
     echo '<input type="number" name="rank_ttl" value="' . esc_attr( $valor ) . '" min="0" step="1" />';
+}
+
+/**
+ * Campo para seleccionar capacidades extra del rol empleado.
+ */
+function cdb_empleado_campo_extra_caps() {
+    $valor = (array) get_option( 'cdb_empleado_extra_caps', array() );
+    $caps  = array(
+        'edit_posts'   => __( 'Editar entradas', 'cdb-empleado' ),
+        'upload_files' => __( 'Subir archivos', 'cdb-empleado' ),
+    );
+
+    foreach ( $caps as $cap => $label ) {
+        echo '<label><input type="checkbox" name="cdb_empleado_extra_caps[]" value="' . esc_attr( $cap ) . '" ' . checked( in_array( $cap, $valor, true ), true, false ) . ' /> ' . esc_html( $label ) . '</label><br />';
+    }
+}
+
+/**
+ * Campo para seleccionar roles permitidos en el selector de autores.
+ */
+function cdb_empleado_campo_selector_roles() {
+    $valor = (array) get_option( 'cdb_empleado_selector_roles', array( 'administrator', 'editor', 'author', 'empleado' ) );
+    global $wp_roles;
+
+    foreach ( $wp_roles->roles as $role_key => $data ) {
+        echo '<label><input type="checkbox" name="cdb_empleado_selector_roles[]" value="' . esc_attr( $role_key ) . '" ' . checked( in_array( $role_key, $valor, true ), true, false ) . ' /> ' . esc_html( $data['name'] ) . '</label><br />';
+    }
 }
 
 /**
@@ -318,6 +409,24 @@ function cdb_empleado_pagina_rendimiento() {
 }
 
 /**
+ * Render de la página de ajustes de roles.
+ */
+function cdb_empleado_pagina_roles() {
+    ?>
+    <div class="wrap">
+        <h1><?php esc_html_e( 'Roles', 'cdb-empleado' ); ?></h1>
+        <form action="options.php" method="post">
+            <?php
+            settings_fields( 'cdb_empleado_roles' );
+            do_settings_sections( 'cdb-empleado-roles' );
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
+
+/**
  * Registrar el menú y submenú de ajustes.
  */
 function cdb_empleado_registrar_menu() {
@@ -345,6 +454,15 @@ function cdb_empleado_registrar_menu() {
         'manage_options',
         'cdb-empleado-estilos',
         'cdb_empleado_pagina_estilos'
+    );
+
+    add_submenu_page(
+        'cdb-empleado',
+        __( 'Roles', 'cdb-empleado' ),
+        __( 'Roles', 'cdb-empleado' ),
+        'manage_options',
+        'cdb-empleado-roles',
+        'cdb_empleado_pagina_roles'
     );
 
     add_submenu_page(
