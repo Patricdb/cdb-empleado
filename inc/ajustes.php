@@ -224,6 +224,45 @@ function cdb_empleado_registrar_ajustes_metacampos() {
 add_action( 'admin_init', 'cdb_empleado_registrar_ajustes_metacampos' );
 
 /**
+ * Registrar ajustes de textos y datos adicionales.
+ */
+function cdb_empleado_registrar_ajustes_textos() {
+    register_setting( 'cdb_empleado_textos', 'cdb_empleado_notice_default', array(
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'default'           => '',
+    ) );
+
+    register_setting( 'cdb_empleado_textos', 'cdb_empleado_extra_data_fields', array(
+        'sanitize_callback' => 'cdb_empleado_sanitizar_extra_data_fields',
+        'default'           => array(),
+    ) );
+
+    add_settings_section(
+        'cdb_empleado_textos_section',
+        __( 'Textos y datos adicionales', 'cdb-empleado' ),
+        '__return_false',
+        'cdb-empleado-textos'
+    );
+
+    add_settings_field(
+        'cdb_empleado_notice_default',
+        __( 'Aviso por defecto', 'cdb-empleado' ),
+        'cdb_empleado_campo_notice_default',
+        'cdb-empleado-textos',
+        'cdb_empleado_textos_section'
+    );
+
+    add_settings_field(
+        'cdb_empleado_extra_data_fields',
+        __( 'Campos de datos adicionales', 'cdb-empleado' ),
+        'cdb_empleado_campo_extra_data_fields',
+        'cdb-empleado-textos',
+        'cdb_empleado_textos_section'
+    );
+}
+add_action( 'admin_init', 'cdb_empleado_registrar_ajustes_textos' );
+
+/**
  * Sanitizar valores de checkbox.
  *
  * @param mixed $valor Valor enviado desde el formulario.
@@ -267,6 +306,27 @@ function cdb_empleado_sanitizar_roles_selector( $valor ) {
     $todos = array_keys( $wp_roles->roles );
     $valor = is_array( $valor ) ? $valor : array();
     return array_values( array_intersect( $valor, $todos ) );
+}
+
+/**
+ * Sanitizar campos de datos adicionales para la tarjeta.
+ *
+ * @param string $valor Texto con pares meta|Etiqueta.
+ * @return array Pares clave => etiqueta.
+ */
+function cdb_empleado_sanitizar_extra_data_fields( $valor ) {
+    $valor  = is_string( $valor ) ? $valor : '';
+    $lineas = array_filter( array_map( 'trim', explode( "\n", $valor ) ) );
+    $pares  = array();
+    foreach ( $lineas as $linea ) {
+        $partes = array_map( 'trim', explode( '|', $linea, 2 ) );
+        $key    = sanitize_key( $partes[0] ?? '' );
+        $label  = sanitize_text_field( $partes[1] ?? '' );
+        if ( $key && $label ) {
+            $pares[ $key ] = $label;
+        }
+    }
+    return $pares;
 }
 
 /**
@@ -317,6 +377,27 @@ function cdb_empleado_campo_tarjeta_oct_bg() {
 function cdb_empleado_campo_rank_ttl() {
     $valor = get_option( 'rank_ttl', 600 );
     echo '<input type="number" name="rank_ttl" value="' . esc_attr( $valor ) . '" min="0" step="1" />';
+}
+
+/**
+ * Campo textarea para el aviso por defecto.
+ */
+function cdb_empleado_campo_notice_default() {
+    $valor = get_option( 'cdb_empleado_notice_default', '' );
+    echo '<textarea name="cdb_empleado_notice_default" rows="3" cols="50">' . esc_textarea( $valor ) . '</textarea>';
+}
+
+/**
+ * Campo textarea para definir datos adicionales.
+ */
+function cdb_empleado_campo_extra_data_fields() {
+    $valor   = (array) get_option( 'cdb_empleado_extra_data_fields', array() );
+    $lineas  = array();
+    foreach ( $valor as $key => $label ) {
+        $lineas[] = $key . '|' . $label;
+    }
+    echo '<textarea name="cdb_empleado_extra_data_fields" rows="5" cols="50">' . esc_textarea( implode( "\n", $lineas ) ) . '</textarea>';
+    echo '<p class="description">' . esc_html__( 'Una pareja por línea: meta_key|Etiqueta', 'cdb-empleado' ) . '</p>';
 }
 
 /**
@@ -633,6 +714,24 @@ function cdb_empleado_pagina_integraciones() {
 }
 
 /**
+ * Render de la página de textos y datos adicionales.
+ */
+function cdb_empleado_pagina_textos() {
+    ?>
+    <div class="wrap">
+        <h1><?php esc_html_e( 'Textos', 'cdb-empleado' ); ?></h1>
+        <form action="options.php" method="post">
+            <?php
+            settings_fields( 'cdb_empleado_textos' );
+            do_settings_sections( 'cdb-empleado-textos' );
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
+
+/**
  * Registrar el menú y submenú de ajustes.
  */
 function cdb_empleado_registrar_menu() {
@@ -691,6 +790,15 @@ function cdb_empleado_registrar_menu() {
 
     add_submenu_page(
         'cdb-empleado',
+        __( 'Textos', 'cdb-empleado' ),
+        __( 'Textos', 'cdb-empleado' ),
+        'manage_options',
+        'cdb-empleado-textos',
+        'cdb_empleado_pagina_textos'
+    );
+
+    add_submenu_page(
+        'cdb-empleado',
         __( 'Rendimiento', 'cdb-empleado' ),
         __( 'Rendimiento', 'cdb-empleado' ),
         'manage_options',
@@ -728,3 +836,45 @@ function cdb_empleado_opcion_rank_ttl() {
     return (int) get_option( 'rank_ttl', 600 );
 }
 add_filter( 'cdb_empleado_rank_ttl', 'cdb_empleado_opcion_rank_ttl' );
+
+/**
+ * Filtro para el aviso por defecto en la calificación.
+ *
+ * @param string $msg Aviso actual.
+ * @param int    $empleado_id ID del empleado.
+ * @return string Aviso final.
+ */
+function cdb_empleado_opcion_notice_default( $msg, $empleado_id ) {
+    if ( ! empty( $msg ) ) {
+        return $msg;
+    }
+
+    return (string) get_option( 'cdb_empleado_notice_default', '' );
+}
+add_filter( 'cdb_grafica_empleado_notice', 'cdb_empleado_opcion_notice_default', 10, 2 );
+
+/**
+ * Filtro para añadir campos extra a los datos de la tarjeta.
+ *
+ * @param array $data Datos actuales.
+ * @param int   $empleado_id ID del empleado.
+ * @return array Datos modificados.
+ */
+function cdb_empleado_opcion_card_extra_data( $data, $empleado_id ) {
+    $fields = (array) get_option( 'cdb_empleado_extra_data_fields', array() );
+    foreach ( $fields as $meta_key => $label ) {
+        $value = get_post_meta( $empleado_id, $meta_key, true );
+        if ( '' !== $value && ! is_array( $value ) ) {
+            if ( ! isset( $data['extra'] ) || ! is_array( $data['extra'] ) ) {
+                $data['extra'] = array();
+            }
+            $data['extra'][ $meta_key ] = array(
+                'label' => $label,
+                'value' => $value,
+            );
+        }
+    }
+
+    return $data;
+}
+add_filter( 'cdb_empleado_card_data', 'cdb_empleado_opcion_card_extra_data', 20, 2 );

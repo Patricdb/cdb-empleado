@@ -51,6 +51,7 @@ function cdb_empleado_get_card_data( int $empleado_id ): array {
         'rank_current' => $rank_current,
         'rank_history' => array( null, null, null ),
         'badges'       => array(),
+        'extra'        => array(),
     );
 
     return apply_filters( 'cdb_empleado_card_data', $data, $empleado_id );
