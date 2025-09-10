@@ -493,93 +493,135 @@ function cdb_empleado_campo_tarjeta_oct_font_heading() {
 }
 
 /**
+ * Obtiene la ruta a una plantilla de administración.
+ *
+ * @param string $template Nombre de la plantilla sin extensión.
+ * @return string Ruta completa del archivo de plantilla.
+ */
+function cdb_empleado_admin_template( $template ) {
+    return plugin_dir_path( __FILE__ ) . '../templates/admin/' . $template . '.php';
+}
+
+/**
+ * Configuración de submenús para el área de administración.
+ *
+ * @return array[]
+ */
+function cdb_empleado_get_submenus() {
+    return array(
+        array(
+            'slug'       => 'edit.php?post_type=empleado',
+            'title'      => __( 'Empleados', 'cdb-empleado' ),
+            'callback'   => null,
+            'capability' => 'edit_posts',
+        ),
+        array(
+            'slug'       => 'cdb-empleado',
+            'title'      => __( 'General', 'cdb-empleado' ),
+            'callback'   => 'cdb_empleado_pagina_ajustes',
+            'capability' => 'manage_options',
+        ),
+        array(
+            'slug'       => 'cdb-empleado-estilos',
+            'title'      => __( 'Estilos', 'cdb-empleado' ),
+            'callback'   => 'cdb_empleado_pagina_estilos',
+            'capability' => 'manage_options',
+        ),
+        array(
+            'slug'       => 'cdb-empleado-metacampos',
+            'title'      => __( 'Metacampos', 'cdb-empleado' ),
+            'callback'   => 'cdb_empleado_pagina_metacampos',
+            'capability' => 'manage_options',
+        ),
+        array(
+            'slug'       => 'cdb-empleado-roles',
+            'title'      => __( 'Roles', 'cdb-empleado' ),
+            'callback'   => 'cdb_empleado_pagina_roles',
+            'capability' => 'manage_options',
+        ),
+        array(
+            'slug'       => 'cdb-empleado-shortcodes',
+            'title'      => __( 'Shortcodes', 'cdb-empleado' ),
+            'callback'   => 'cdb_empleado_pagina_shortcodes',
+            'capability' => 'manage_options',
+        ),
+        array(
+            'slug'       => 'cdb-empleado-integraciones',
+            'title'      => __( 'Integraciones', 'cdb-empleado' ),
+            'callback'   => 'cdb_empleado_pagina_integraciones',
+            'capability' => 'manage_options',
+        ),
+        array(
+            'slug'       => 'cdb-empleado-textos',
+            'title'      => __( 'Textos', 'cdb-empleado' ),
+            'callback'   => 'cdb_empleado_pagina_textos',
+            'capability' => 'manage_options',
+        ),
+        array(
+            'slug'       => 'cdb-empleado-rendimiento',
+            'title'      => __( 'Rendimiento', 'cdb-empleado' ),
+            'callback'   => 'cdb_empleado_pagina_rendimiento',
+            'capability' => 'manage_options',
+        ),
+    );
+}
+
+/**
+ * Muestra pestañas de navegación para las páginas del plugin.
+ *
+ * @param string $actual Slug de la pestaña activa.
+ */
+function cdb_empleado_admin_tabs( $actual ) {
+    echo '<h2 class="nav-tab-wrapper">';
+    foreach ( cdb_empleado_get_submenus() as $submenu ) {
+        if ( empty( $submenu['callback'] ) ) {
+            continue;
+        }
+        $clase = ( $actual === $submenu['slug'] ) ? 'nav-tab nav-tab-active' : 'nav-tab';
+        $url   = admin_url( 'admin.php?page=' . $submenu['slug'] );
+        printf(
+            '<a href="%s" class="%s">%s</a>',
+            esc_url( $url ),
+            esc_attr( $clase ),
+            esc_html( $submenu['title'] )
+        );
+    }
+    echo '</h2>';
+}
+
+/**
  * Render de la página de ajustes generales.
  */
 function cdb_empleado_pagina_ajustes() {
-    ?>
-    <div class="wrap">
-        <h1><?php esc_html_e( 'CdB Empleado', 'cdb-empleado' ); ?></h1>
-        <form action="options.php" method="post">
-            <?php
-            settings_fields( 'cdb_empleado_general' );
-            do_settings_sections( 'cdb-empleado' );
-            submit_button();
-            ?>
-        </form>
-    </div>
-    <?php
+    include cdb_empleado_admin_template( 'ajustes' );
 }
 
 /**
  * Render de la página de ajustes de estilos.
  */
 function cdb_empleado_pagina_estilos() {
-    ?>
-    <div class="wrap">
-        <h1><?php esc_html_e( 'Estilos de tarjeta', 'cdb-empleado' ); ?></h1>
-        <form action="options.php" method="post">
-            <?php
-            settings_fields( 'cdb_empleado_estilos' );
-            do_settings_sections( 'cdb-empleado-estilos' );
-            submit_button();
-            ?>
-        </form>
-    </div>
-    <?php
+    include cdb_empleado_admin_template( 'estilos' );
 }
 
 /**
  * Render de la página de ajustes de metacampos.
  */
 function cdb_empleado_pagina_metacampos() {
-    ?>
-    <div class="wrap">
-        <h1><?php esc_html_e( 'Metacampos', 'cdb-empleado' ); ?></h1>
-        <form action="options.php" method="post">
-            <?php
-            settings_fields( 'cdb_empleado_metacampos' );
-            do_settings_sections( 'cdb-empleado-metacampos' );
-            submit_button();
-            ?>
-        </form>
-    </div>
-    <?php
+    include cdb_empleado_admin_template( 'metacampos' );
 }
 
 /**
  * Render de la página de ajustes de rendimiento.
  */
 function cdb_empleado_pagina_rendimiento() {
-    ?>
-    <div class="wrap">
-        <h1><?php esc_html_e( 'Ajustes de rendimiento', 'cdb-empleado' ); ?></h1>
-        <form action="options.php" method="post">
-            <?php
-            settings_fields( 'cdb_empleado_rendimiento' );
-            do_settings_sections( 'cdb-empleado-rendimiento' );
-            submit_button();
-            ?>
-        </form>
-    </div>
-    <?php
+    include cdb_empleado_admin_template( 'rendimiento' );
 }
 
 /**
  * Render de la página de ajustes de roles.
  */
 function cdb_empleado_pagina_roles() {
-    ?>
-    <div class="wrap">
-        <h1><?php esc_html_e( 'Roles', 'cdb-empleado' ); ?></h1>
-        <form action="options.php" method="post">
-            <?php
-            settings_fields( 'cdb_empleado_roles' );
-            do_settings_sections( 'cdb-empleado-roles' );
-            submit_button();
-            ?>
-        </form>
-    </div>
-    <?php
+    include cdb_empleado_admin_template( 'roles' );
 }
 
 /**
@@ -588,189 +630,29 @@ function cdb_empleado_pagina_roles() {
 function cdb_empleado_pagina_shortcodes() {
     $shortcodes = array(
         array(
-            'tag'       => 'equipos_del_empleado',
-            'atts'      => array(
+            'tag'     => 'equipos_del_empleado',
+            'atts'    => array(
                 'empleado_id' => __( 'ID del empleado (opcional; usa el post actual si se omite)', 'cdb-empleado' ),
             ),
-            'desc'      => __( 'Lista equipos y posiciones del empleado consultando ${prefix}cdb_experiencia.', 'cdb-empleado' ),
-            'example'   => '[equipos_del_empleado empleado_id="15"]',
+            'desc'    => __( 'Lista equipos y posiciones del empleado consultando ${prefix}cdb_experiencia.', 'cdb-empleado' ),
+            'example' => '[equipos_del_empleado empleado_id="15"]',
         ),
     );
-    ?>
-    <div class="wrap">
-        <h1><?php esc_html_e( 'Shortcodes', 'cdb-empleado' ); ?></h1>
-        <table class="widefat striped">
-            <thead>
-                <tr>
-                    <th><?php esc_html_e( 'Shortcode', 'cdb-empleado' ); ?></th>
-                    <th><?php esc_html_e( 'Atributos', 'cdb-empleado' ); ?></th>
-                    <th><?php esc_html_e( 'Descripción', 'cdb-empleado' ); ?></th>
-                    <th><?php esc_html_e( 'Ejemplo', 'cdb-empleado' ); ?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ( $shortcodes as $sc ) : ?>
-                    <tr>
-                        <td><code><?php echo esc_html( $sc['tag'] ); ?></code></td>
-                        <td>
-                            <?php foreach ( $sc['atts'] as $att => $label ) : ?>
-                                <code><?php echo esc_html( $att ); ?></code> - <?php echo esc_html( $label ); ?><br />
-                            <?php endforeach; ?>
-                        </td>
-                        <td><?php echo esc_html( $sc['desc'] ); ?></td>
-                        <td>
-                            <code><?php echo esc_html( $sc['example'] ); ?></code>
-                            <button type="button" class="button cdb-copy" data-copy="<?php echo esc_attr( $sc['example'] ); ?>">
-                                <?php esc_html_e( 'Copiar', 'cdb-empleado' ); ?>
-                            </button>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-        <script>
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('cdb-copy')) {
-                navigator.clipboard.writeText(e.target.dataset.copy);
-                const original = e.target.textContent;
-                e.target.textContent = '<?php echo esc_js( __( 'Copiado!', 'cdb-empleado' ) ); ?>';
-                setTimeout(function(){ e.target.textContent = original; }, 2000);
-            }
-        });
-        </script>
-    </div>
-    <?php
+    include cdb_empleado_admin_template( 'shortcodes' );
 }
 
 /**
  * Render de la página de integraciones.
  */
 function cdb_empleado_pagina_integraciones() {
-    ?>
-    <div class="wrap">
-        <h1><?php esc_html_e( 'Integraciones', 'cdb-empleado' ); ?></h1>
-
-        <p>
-            <?php esc_html_e( 'Consulta la sección de Shortcodes para ejemplos y uso de códigos abreviados.', 'cdb-empleado' ); ?>
-        </p>
-
-        <h2><?php esc_html_e( 'Hooks y filtros', 'cdb-empleado' ); ?></h2>
-        <table class="widefat striped">
-            <thead>
-                <tr>
-                    <th><?php esc_html_e( 'Hook/filtro', 'cdb-empleado' ); ?></th>
-                    <th><?php esc_html_e( 'Propósito', 'cdb-empleado' ); ?></th>
-                    <th><?php esc_html_e( 'Parámetros', 'cdb-empleado' ); ?></th>
-                    <th><?php esc_html_e( 'Retorno', 'cdb-empleado' ); ?></th>
-                    <th><?php esc_html_e( 'Ejemplo', 'cdb-empleado' ); ?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><code>cdb_empleado_inyectar_grafica</code></td>
-                    <td><?php esc_html_e( 'Habilita/inhibe la gráfica en single de empleado.', 'cdb-empleado' ); ?></td>
-                    <td><code>bool $enabled, int $empleado_id</code></td>
-                    <td><code>bool</code></td>
-                    <td><code>add_filter('cdb_empleado_inyectar_grafica','__return_false');</code></td>
-                </tr>
-                <tr>
-                    <td><code>cdb_empleado_inyectar_calificacion</code></td>
-                    <td><?php esc_html_e( 'Controla el bloque de calificación.', 'cdb-empleado' ); ?></td>
-                    <td><code>bool $enabled, int $empleado_id</code></td>
-                    <td><code>bool</code></td>
-                    <td><code>add_filter('cdb_empleado_inyectar_calificacion','__return_false');</code></td>
-                </tr>
-                <tr>
-                    <td><code>cdb_grafica_empleado_html</code></td>
-                    <td><?php esc_html_e( 'Sustituye el HTML de la gráfica.', 'cdb-empleado' ); ?></td>
-                    <td><code>string $html, int $empleado_id, array $args</code></td>
-                    <td><code>string</code></td>
-                    <td><code>add_filter('cdb_grafica_empleado_html','mi_callback',10,3);</code></td>
-                </tr>
-                <tr>
-                    <td><code>cdb_grafica_empleado_form_html</code></td>
-                    <td><?php esc_html_e( 'Personaliza el formulario de calificación.', 'cdb-empleado' ); ?></td>
-                    <td><code>string $html, int $empleado_id, array $args</code></td>
-                    <td><code>string</code></td>
-                    <td><code>add_filter('cdb_grafica_empleado_form_html','mi_form',10,3);</code></td>
-                </tr>
-                <tr>
-                    <td><code>cdb_grafica_empleado_scores_table_html</code></td>
-                    <td><?php esc_html_e( 'Ajusta la tabla de puntuaciones.', 'cdb-empleado' ); ?></td>
-                    <td><code>string $html, int $empleado_id, array $args</code></td>
-                    <td><code>string</code></td>
-                    <td><code>add_filter('cdb_grafica_empleado_scores_table_html','mi_tabla',10,3);</code></td>
-                </tr>
-                <tr>
-                    <td><code>cdb_grafica_empleado_total</code></td>
-                    <td><?php esc_html_e( 'Modifica el puntaje total mostrado.', 'cdb-empleado' ); ?></td>
-                    <td><code>float $total, int $empleado_id</code></td>
-                    <td><code>float</code></td>
-                    <td><code>add_filter('cdb_grafica_empleado_total','mi_total',10,2);</code></td>
-                </tr>
-                <tr>
-                    <td><code>cdb_empleado_use_new_card</code></td>
-                    <td><?php esc_html_e( 'Decide uso de tarjeta alternativa.', 'cdb-empleado' ); ?></td>
-                    <td><code>bool $use_new, int $empleado_id</code></td>
-                    <td><code>bool</code></td>
-                    <td><code>add_filter('cdb_empleado_use_new_card','__return_true');</code></td>
-                </tr>
-                <tr>
-                    <td><code>cdb_grafica_empleado_notice</code></td>
-                    <td><?php esc_html_e( 'Personaliza aviso en la sección de calificación.', 'cdb-empleado' ); ?></td>
-                    <td><code>string $msg, int $empleado_id</code></td>
-                    <td><code>string</code></td>
-                    <td><code>add_filter('cdb_grafica_empleado_notice','mi_aviso',10,2);</code></td>
-                </tr>
-                <tr>
-                    <td><code>cdb_empleado_card_data</code></td>
-                    <td><?php esc_html_e( 'Filtra datos mostrados en la tarjeta.', 'cdb-empleado' ); ?></td>
-                    <td><code>array $data, int $empleado_id</code></td>
-                    <td><code>array</code></td>
-                    <td><code>add_filter('cdb_empleado_card_data','mi_data',10,2);</code></td>
-                </tr>
-                <tr>
-                    <td><code>cdb_empleado_rank_ttl</code></td>
-                    <td><?php esc_html_e( 'Ajusta duración del caché de rankings.', 'cdb-empleado' ); ?></td>
-                    <td><code>int $seconds</code></td>
-                    <td><code>int</code></td>
-                    <td><code>add_filter('cdb_empleado_rank_ttl', fn()=>300);</code></td>
-                </tr>
-                <tr>
-                    <td><code>cdb_empleado_rank_current</code></td>
-                    <td><?php esc_html_e( 'Modifica ranking calculado para un empleado.', 'cdb-empleado' ); ?></td>
-                    <td><code>mixed $rank, int $empleado_id</code></td>
-                    <td><code>mixed</code></td>
-                    <td><code>add_filter('cdb_empleado_rank_current','mi_rank',10,2);</code></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <p>
-            <?php esc_html_e( 'Más información en:', 'cdb-empleado' ); ?>
-            <a href="https://github.com/proyectocdb/cdb-empleado#hooks-y-filtros" target="_blank"><?php esc_html_e( 'README – Hooks y filtros', 'cdb-empleado' ); ?></a>,
-            <a href="https://developer.wordpress.org/plugins/hooks/" target="_blank"><?php esc_html_e( 'Hooks en WordPress', 'cdb-empleado' ); ?></a>.
-        </p>
-    </div>
-    <?php
+    include cdb_empleado_admin_template( 'integraciones' );
 }
 
 /**
  * Render de la página de textos y datos adicionales.
  */
 function cdb_empleado_pagina_textos() {
-    ?>
-    <div class="wrap">
-        <h1><?php esc_html_e( 'Textos', 'cdb-empleado' ); ?></h1>
-        <form action="options.php" method="post">
-            <?php
-            settings_fields( 'cdb_empleado_textos' );
-            do_settings_sections( 'cdb-empleado-textos' );
-            submit_button();
-            ?>
-        </form>
-    </div>
-    <?php
+    include cdb_empleado_admin_template( 'textos' );
 }
 
 /**
@@ -787,85 +669,18 @@ function cdb_empleado_registrar_menu() {
         4
     );
 
-    add_submenu_page(
-        'cdb-empleado',
-        __( 'Empleados', 'cdb-empleado' ),
-        __( 'Empleados', 'cdb-empleado' ),
-        'edit_posts',
-        'edit.php?post_type=empleado'
-    );
+    foreach ( cdb_empleado_get_submenus() as $submenu ) {
+        add_submenu_page(
+            'cdb-empleado',
+            $submenu['title'],
+            $submenu['title'],
+            $submenu['capability'],
+            $submenu['slug'],
+            $submenu['callback']
+        );
+    }
 
-    add_submenu_page(
-        'cdb-empleado',
-        __( 'General', 'cdb-empleado' ),
-        __( 'General', 'cdb-empleado' ),
-        'manage_options',
-        'cdb-empleado',
-        'cdb_empleado_pagina_ajustes'
-    );
-
-    add_submenu_page(
-        'cdb-empleado',
-        __( 'Estilos', 'cdb-empleado' ),
-        __( 'Estilos', 'cdb-empleado' ),
-        'manage_options',
-        'cdb-empleado-estilos',
-        'cdb_empleado_pagina_estilos'
-    );
-
-    add_submenu_page(
-        'cdb-empleado',
-        __( 'Metacampos', 'cdb-empleado' ),
-        __( 'Metacampos', 'cdb-empleado' ),
-        'manage_options',
-        'cdb-empleado-metacampos',
-        'cdb_empleado_pagina_metacampos'
-    );
-
-    add_submenu_page(
-        'cdb-empleado',
-        __( 'Roles', 'cdb-empleado' ),
-        __( 'Roles', 'cdb-empleado' ),
-        'manage_options',
-        'cdb-empleado-roles',
-        'cdb_empleado_pagina_roles'
-    );
-
-    add_submenu_page(
-        'cdb-empleado',
-        __( 'Shortcodes', 'cdb-empleado' ),
-        __( 'Shortcodes', 'cdb-empleado' ),
-        'manage_options',
-        'cdb-empleado-shortcodes',
-        'cdb_empleado_pagina_shortcodes'
-    );
-
-    add_submenu_page(
-        'cdb-empleado',
-        __( 'Integraciones', 'cdb-empleado' ),
-        __( 'Integraciones', 'cdb-empleado' ),
-        'manage_options',
-        'cdb-empleado-integraciones',
-        'cdb_empleado_pagina_integraciones'
-    );
-
-    add_submenu_page(
-        'cdb-empleado',
-        __( 'Textos', 'cdb-empleado' ),
-        __( 'Textos', 'cdb-empleado' ),
-        'manage_options',
-        'cdb-empleado-textos',
-        'cdb_empleado_pagina_textos'
-    );
-
-    add_submenu_page(
-        'cdb-empleado',
-        __( 'Rendimiento', 'cdb-empleado' ),
-        __( 'Rendimiento', 'cdb-empleado' ),
-        'manage_options',
-        'cdb-empleado-rendimiento',
-        'cdb_empleado_pagina_rendimiento'
-    );
+    remove_submenu_page( 'cdb-empleado', 'cdb-empleado' );
 }
 add_action( 'admin_menu', 'cdb_empleado_registrar_menu' );
 
