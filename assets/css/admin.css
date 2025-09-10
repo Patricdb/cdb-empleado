@@ -8,3 +8,10 @@
 #cdb-empleado-preview .cdb-preview-title {
     margin-top: 0;
 }
+#tarjeta_oct_bg_svg_display {
+    display: none;
+    margin-top: 10px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid #ccc;
+}

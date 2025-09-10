@@ -434,6 +434,8 @@ function cdb_empleado_campo_tarjeta_oct_bg() {
 function cdb_empleado_campo_tarjeta_oct_bg_svg() {
     $valor = get_option( 'tarjeta_oct_bg_svg', cdb_empleado_default_bg_svg() );
     echo '<textarea id="tarjeta_oct_bg_svg" name="tarjeta_oct_bg_svg" rows="5" class="large-text code">' . esc_textarea( $valor ) . '</textarea>';
+    echo '<button type="button" id="tarjeta_oct_bg_svg_preview" class="button">' . esc_html__( 'Previsualizar', 'cdb-empleado' ) . '</button>';
+    echo '<div id="tarjeta_oct_bg_svg_display"></div>';
     echo '<p class="description">' . esc_html__( 'SVG que se usará como fondo de la tarjeta.', 'cdb-empleado' ) . '</p>';
 }
 

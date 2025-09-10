@@ -32,6 +32,10 @@
         });
         $('#tarjeta_oct_font_body, #tarjeta_oct_font_heading').on('change', updatePreview);
         $('#tarjeta_oct_bg_svg').on('input', updatePreview);
+        $('#tarjeta_oct_bg_svg_preview').on('click', function(){
+            var svg = $('#tarjeta_oct_bg_svg').val();
+            $('#tarjeta_oct_bg_svg_display').html(svg).toggle();
+        });
         updatePreview();
     });
 })(jQuery);
