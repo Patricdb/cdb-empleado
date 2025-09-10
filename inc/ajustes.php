@@ -515,12 +515,6 @@ function cdb_empleado_admin_template( $template ) {
 function cdb_empleado_get_submenus() {
     return array(
         array(
-            'slug'       => 'edit.php?post_type=empleado',
-            'title'      => __( 'Empleados', 'cdb-empleado' ),
-            'callback'   => null,
-            'capability' => 'edit_posts',
-        ),
-        array(
             'slug'       => 'cdb-empleado',
             'title'      => __( 'General', 'cdb-empleado' ),
             'callback'   => 'cdb_empleado_pagina_ajustes',
