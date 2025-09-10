@@ -40,6 +40,9 @@ class Cdb_Empleado_Plugin {
         add_action( 'wp_enqueue_scripts', array( $this, 'front_assets' ) );
         add_action( 'template_redirect', array( $this, 'nocache' ) );
         add_action( 'save_post_empleado', array( $this, 'guardar_equipo_year' ) );
+        add_action( 'restrict_manage_posts', array( $this, 'filtros_listado_empleados' ) );
+        add_action( 'pre_get_posts', array( $this, 'aplicar_filtros_listado_empleados' ) );
+        add_action( 'manage_posts_extra_tablenav', array( $this, 'acciones_listado_empleados' ), 20, 1 );
     }
 
     /**
@@ -293,6 +296,95 @@ class Cdb_Empleado_Plugin {
                 delete_post_meta( $post_id, '_cdb_empleado_equipo' );
             }
         }
+    }
+
+    /**
+     * Mostrar filtros personalizados en el listado de empleados.
+     */
+    public function filtros_listado_empleados() {
+        global $typenow;
+        if ( 'empleado' !== $typenow ) {
+            return;
+        }
+
+        $equipos       = self::get_equipos();
+        $current_team  = isset( $_GET['equipo'] ) ? absint( $_GET['equipo'] ) : '';
+        $current_year  = isset( $_GET['cdb_year'] ) ? sanitize_text_field( $_GET['cdb_year'] ) : '';
+
+        echo '<select name="equipo" class="postform">';
+        echo '<option value="">' . esc_html__( 'Todos los equipos', 'cdb-empleado' ) . '</option>';
+        foreach ( $equipos as $eq ) {
+            printf( '<option value="%1$d" %2$s>%3$s</option>', $eq['ID'], selected( $current_team, $eq['ID'], false ), esc_html( $eq['post_title'] ) );
+        }
+        echo '</select>';
+
+        $years = wp_list_pluck( $equipos, '_cdb_equipo_year' );
+        $years = array_unique( array_filter( $years ) );
+        sort( $years );
+
+        echo '<select name="cdb_year" class="postform">';
+        echo '<option value="">' . esc_html__( 'Todos los años', 'cdb-empleado' ) . '</option>';
+        foreach ( $years as $year ) {
+            printf( '<option value="%1$s" %2$s>%1$s</option>', esc_html( $year ), selected( $current_year, $year, false ) );
+        }
+        echo '</select>';
+    }
+
+    /**
+     * Aplicar filtros personalizados a la consulta del listado de empleados.
+     *
+     * @param WP_Query $query Consulta principal.
+     */
+    public function aplicar_filtros_listado_empleados( $query ) {
+        global $pagenow;
+        $post_type = $_GET['post_type'] ?? '';
+
+        if ( 'edit.php' !== $pagenow || 'empleado' !== $post_type || ! $query->is_main_query() ) {
+            return;
+        }
+
+        $meta_query = array();
+
+        if ( ! empty( $_GET['equipo'] ) ) {
+            $meta_query[] = array(
+                'key'   => '_cdb_empleado_equipo',
+                'value' => absint( $_GET['equipo'] ),
+            );
+        }
+
+        if ( ! empty( $_GET['cdb_year'] ) ) {
+            $meta_query[] = array(
+                'key'   => '_cdb_empleado_year',
+                'value' => sanitize_text_field( $_GET['cdb_year'] ),
+            );
+        }
+
+        if ( ! empty( $meta_query ) ) {
+            if ( count( $meta_query ) > 1 ) {
+                $meta_query['relation'] = 'AND';
+            }
+            $query->set( 'meta_query', $meta_query );
+        }
+    }
+
+    /**
+     * Añadir botones y enlaces en el listado de empleados.
+     *
+     * @param string $which Posición del tablenav.
+     */
+    public function acciones_listado_empleados( $which ) {
+        global $typenow;
+        if ( 'empleado' !== $typenow || 'top' !== $which ) {
+            return;
+        }
+
+        $add_url = admin_url( 'post-new.php?post_type=empleado' );
+        $doc_url = 'https://github.com/proyectocdb/cdb-empleado#readme';
+
+        echo '<div class="cdb-listado-acciones">';
+        echo '<a href="' . esc_url( $add_url ) . '" class="button button-primary">' . esc_html__( 'Añadir Empleado', 'cdb-empleado' ) . '</a> ';
+        echo '<a href="' . esc_url( $doc_url ) . '" class="button" target="_blank">' . esc_html__( 'Documentación', 'cdb-empleado' ) . '</a>';
+        echo '</div>';
     }
 
     /**
