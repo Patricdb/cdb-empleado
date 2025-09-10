@@ -1,0 +1,31 @@
+(function($){
+    function getStack(selector){
+        var opt = $(selector).find('option:selected');
+        return opt.data('stack') || '';
+    }
+    function updatePreview(){
+        var ink = $('#tarjeta_oct_ink').val();
+        var bgStart = $('#tarjeta_oct_bg_start').val();
+        var bgEnd = $('#tarjeta_oct_bg_end').val();
+        var bodyStack = getStack('#tarjeta_oct_font_body');
+        var headStack = getStack('#tarjeta_oct_font_heading');
+        var $preview = $('#cdb-empleado-preview');
+        if(!$preview.length){
+            return;
+        }
+        $preview.css({
+            'color': ink,
+            'background': 'linear-gradient(180deg,'+bgStart+','+bgEnd+')',
+            'font-family': bodyStack
+        });
+        $preview.find('.cdb-preview-title').css('font-family', headStack);
+    }
+    $(function(){
+        $('.cdb-color-field').wpColorPicker({
+            change: updatePreview,
+            clear: updatePreview
+        });
+        $('#tarjeta_oct_font_body, #tarjeta_oct_font_heading').on('change', updatePreview);
+        updatePreview();
+    });
+})(jQuery);

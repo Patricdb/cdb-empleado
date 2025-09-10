@@ -1,0 +1,10 @@
+#cdb-empleado-preview {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    color: var(--ink, #000);
+    background: linear-gradient(180deg, #f5e8c8, #efe1b4);
+}
+#cdb-empleado-preview .cdb-preview-title {
+    margin-top: 0;
+}
