@@ -789,6 +789,14 @@ function cdb_empleado_registrar_menu() {
 
     add_submenu_page(
         'cdb-empleado',
+        __( 'Empleados', 'cdb-empleado' ),
+        __( 'Empleados', 'cdb-empleado' ),
+        'edit_posts',
+        'edit.php?post_type=empleado'
+    );
+
+    add_submenu_page(
+        'cdb-empleado',
         __( 'General', 'cdb-empleado' ),
         __( 'General', 'cdb-empleado' ),
         'manage_options',
