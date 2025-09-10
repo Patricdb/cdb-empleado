@@ -521,6 +521,12 @@ function cdb_empleado_get_submenus() {
             'capability' => 'manage_options',
         ),
         array(
+            'slug'       => 'edit.php?post_type=empleado',
+            'title'      => __( 'Empleados', 'cdb-empleado' ),
+            'callback'   => '',
+            'capability' => 'edit_posts',
+        ),
+        array(
             'slug'       => 'cdb-empleado-estilos',
             'title'      => __( 'Estilos', 'cdb-empleado' ),
             'callback'   => 'cdb_empleado_pagina_estilos',
@@ -573,11 +579,10 @@ function cdb_empleado_get_submenus() {
 function cdb_empleado_admin_tabs( $actual ) {
     echo '<h2 class="nav-tab-wrapper">';
     foreach ( cdb_empleado_get_submenus() as $submenu ) {
-        if ( empty( $submenu['callback'] ) ) {
-            continue;
-        }
         $clase = ( $actual === $submenu['slug'] ) ? 'nav-tab nav-tab-active' : 'nav-tab';
-        $url   = admin_url( 'admin.php?page=' . $submenu['slug'] );
+        $url   = ( false !== strpos( $submenu['slug'], '.php' ) )
+            ? admin_url( $submenu['slug'] )
+            : admin_url( 'admin.php?page=' . $submenu['slug'] );
         printf(
             '<a href="%s" class="%s">%s</a>',
             esc_url( $url ),
@@ -681,17 +686,16 @@ function cdb_empleado_registrar_menu() {
         );
     }
 
-    add_submenu_page(
-        'cdb-empleado',
-        __( 'Empleados', 'cdb-empleado' ),
-        __( 'Empleados', 'cdb-empleado' ),
-        'edit_posts',
-        'edit.php?post_type=empleado'
-    );
-
     remove_submenu_page( 'cdb-empleado', 'cdb-empleado' );
 }
 add_action( 'admin_menu', 'cdb_empleado_registrar_menu', 20 );
+
+add_action( 'admin_notices', function() {
+    $screen = get_current_screen();
+    if ( 'edit' === $screen->base && 'empleado' === $screen->post_type ) {
+        cdb_empleado_admin_tabs( 'edit.php?post_type=empleado' );
+    }
+} );
 
 /**
  * Encola scripts y estilos para las páginas de ajustes del plugin.
