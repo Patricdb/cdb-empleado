@@ -658,6 +658,8 @@ function cdb_empleado_pagina_textos() {
  * Registrar el menú y submenú de ajustes.
  */
 function cdb_empleado_registrar_menu() {
+    remove_submenu_page( 'cdb-empleado', 'edit.php?post_type=empleado' );
+
     add_menu_page(
         __( 'CdB Empleado', 'cdb-empleado' ),
         __( 'CdB Empleado', 'cdb-empleado' ),
@@ -679,9 +681,17 @@ function cdb_empleado_registrar_menu() {
         );
     }
 
+    add_submenu_page(
+        'cdb-empleado',
+        __( 'Empleados', 'cdb-empleado' ),
+        __( 'Empleados', 'cdb-empleado' ),
+        'edit_posts',
+        'edit.php?post_type=empleado'
+    );
+
     remove_submenu_page( 'cdb-empleado', 'cdb-empleado' );
 }
-add_action( 'admin_menu', 'cdb_empleado_registrar_menu' );
+add_action( 'admin_menu', 'cdb_empleado_registrar_menu', 20 );
 
 /**
  * Encola scripts y estilos para las páginas de ajustes del plugin.
