@@ -351,6 +351,7 @@ function cdb_empleado_campo_inyectar_calificacion() {
 function cdb_empleado_campo_usar_tarjeta_oct() {
     $valor = get_option( 'usar_tarjeta_oct', 0 );
     echo '<input type="checkbox" name="usar_tarjeta_oct" value="1" ' . checked( 1, $valor, false ) . ' />';
+    echo '<p class="description">' . esc_html__( 'Activa el nuevo diseño de tarjeta octogonal.', 'cdb-empleado' ) . '</p>';
 }
 
 /**
@@ -358,7 +359,8 @@ function cdb_empleado_campo_usar_tarjeta_oct() {
  */
 function cdb_empleado_campo_tarjeta_oct_ink() {
     $valor = get_option( 'tarjeta_oct_ink', '#66604e' );
-    echo '<input type="color" name="tarjeta_oct_ink" value="' . esc_attr( $valor ) . '" />';
+    echo '<input type="text" id="tarjeta_oct_ink" class="cdb-color-field" name="tarjeta_oct_ink" value="' . esc_attr( $valor ) . '" />';
+    echo '<p class="description">' . sprintf( esc_html__( 'Color principal de la tarjeta. %s', 'cdb-empleado' ), '<a href="https://developer.wordpress.org/reference/functions/wp_color_picker/" target="_blank">' . esc_html__( 'Ayuda', 'cdb-empleado' ) . '</a>' ) . '</p>';
 }
 
 /**
@@ -367,8 +369,9 @@ function cdb_empleado_campo_tarjeta_oct_ink() {
 function cdb_empleado_campo_tarjeta_oct_bg() {
     $ini = get_option( 'tarjeta_oct_bg_start', '#f5e8c8' );
     $fin = get_option( 'tarjeta_oct_bg_end', '#efe1b4' );
-    echo '<input type="color" name="tarjeta_oct_bg_start" value="' . esc_attr( $ini ) . '" /> ';
-    echo '<input type="color" name="tarjeta_oct_bg_end" value="' . esc_attr( $fin ) . '" />';
+    echo '<input type="text" id="tarjeta_oct_bg_start" class="cdb-color-field" name="tarjeta_oct_bg_start" value="' . esc_attr( $ini ) . '" /> ';
+    echo '<input type="text" id="tarjeta_oct_bg_end" class="cdb-color-field" name="tarjeta_oct_bg_end" value="' . esc_attr( $fin ) . '" />';
+    echo '<p class="description">' . esc_html__( 'Colores de inicio y fin del gradiente.', 'cdb-empleado' ) . '</p>';
 }
 
 /**
@@ -472,11 +475,12 @@ function cdb_empleado_fuentes_disponibles() {
 function cdb_empleado_campo_tarjeta_oct_font_body() {
     $valor   = get_option( 'tarjeta_oct_font_body', 'sans' );
     $fuentes = cdb_empleado_fuentes_disponibles();
-    echo '<select name="tarjeta_oct_font_body">';
+    echo '<select id="tarjeta_oct_font_body" name="tarjeta_oct_font_body">';
     foreach ( $fuentes as $key => $data ) {
-        echo '<option value="' . esc_attr( $key ) . '" ' . selected( $valor, $key, false ) . '>' . esc_html( $data['label'] ) . '</option>';
+        echo '<option value="' . esc_attr( $key ) . '" data-stack="' . esc_attr( $data['stack'] ) . '" ' . selected( $valor, $key, false ) . '>' . esc_html( $data['label'] ) . '</option>';
     }
     echo '</select>';
+    echo '<p class="description">' . esc_html__( 'Fuente aplicada al contenido.', 'cdb-empleado' ) . '</p>';
 }
 
 /**
@@ -485,11 +489,12 @@ function cdb_empleado_campo_tarjeta_oct_font_body() {
 function cdb_empleado_campo_tarjeta_oct_font_heading() {
     $valor   = get_option( 'tarjeta_oct_font_heading', 'sans' );
     $fuentes = cdb_empleado_fuentes_disponibles();
-    echo '<select name="tarjeta_oct_font_heading">';
+    echo '<select id="tarjeta_oct_font_heading" name="tarjeta_oct_font_heading">';
     foreach ( $fuentes as $key => $data ) {
-        echo '<option value="' . esc_attr( $key ) . '" ' . selected( $valor, $key, false ) . '>' . esc_html( $data['label'] ) . '</option>';
+        echo '<option value="' . esc_attr( $key ) . '" data-stack="' . esc_attr( $data['stack'] ) . '" ' . selected( $valor, $key, false ) . '>' . esc_html( $data['label'] ) . '</option>';
     }
     echo '</select>';
+    echo '<p class="description">' . sprintf( esc_html__( 'Fuente para encabezados. %s', 'cdb-empleado' ), '<a href="https://wordpress.org/documentation/article/using-themes/" target="_blank">' . esc_html__( 'Ayuda', 'cdb-empleado' ) . '</a>' ) . '</p>';
 }
 
 /**
@@ -683,6 +688,59 @@ function cdb_empleado_registrar_menu() {
     remove_submenu_page( 'cdb-empleado', 'cdb-empleado' );
 }
 add_action( 'admin_menu', 'cdb_empleado_registrar_menu' );
+
+/**
+ * Encola scripts y estilos para las páginas de ajustes del plugin.
+ *
+ * @param string $hook Identificador de la pantalla actual.
+ */
+function cdb_empleado_admin_enqueue( $hook ) {
+    if ( false === strpos( $hook, 'cdb-empleado' ) ) {
+        return;
+    }
+
+    wp_enqueue_style( 'wp-color-picker' );
+
+    $style_path   = plugin_dir_path( __FILE__ ) . '../assets/css/admin.css';
+    $style_version = file_exists( $style_path ) ? filemtime( $style_path ) : false;
+    wp_enqueue_style(
+        'cdb-empleado-admin',
+        plugins_url( '../assets/css/admin.css', __FILE__ ),
+        array( 'wp-color-picker' ),
+        $style_version ?: null
+    );
+
+    $script_path   = plugin_dir_path( __FILE__ ) . '../assets/js/admin.js';
+    $script_version = file_exists( $script_path ) ? filemtime( $script_path ) : false;
+    wp_enqueue_script(
+        'cdb-empleado-admin',
+        plugins_url( '../assets/js/admin.js', __FILE__ ),
+        array( 'wp-color-picker', 'jquery' ),
+        $script_version ?: null,
+        true
+    );
+
+    wp_localize_script( 'cdb-empleado-admin', 'cdbEmpleadoFonts', cdb_empleado_fuentes_disponibles() );
+}
+add_action( 'admin_enqueue_scripts', 'cdb_empleado_admin_enqueue' );
+
+/**
+ * Añade pestaña de ayuda a las pantallas del plugin.
+ */
+function cdb_empleado_admin_help() {
+    $screen = get_current_screen();
+    if ( strpos( $screen->id, 'cdb-empleado' ) === false ) {
+        return;
+    }
+
+    $screen->add_help_tab( array(
+        'id'      => 'cdb_empleado_help',
+        'title'   => __( 'Ayuda', 'cdb-empleado' ),
+        'content' => '<p>' . esc_html__( 'Consulta la documentación del plugin para obtener más información.', 'cdb-empleado' ) . '</p>' .
+            '<p><a href="https://proyectocdb.es" target="_blank">' . esc_html__( 'Documentación', 'cdb-empleado' ) . '</a></p>',
+    ) );
+}
+add_action( 'current_screen', 'cdb_empleado_admin_help' );
 
 /**
  * Filtros para inyectar gráfica y calificación según los ajustes.

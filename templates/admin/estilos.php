@@ -15,4 +15,8 @@
         submit_button();
         ?>
     </form>
+    <div id="cdb-empleado-preview" class="cdb-preview">
+        <h3 class="cdb-preview-title"><?php esc_html_e( 'Vista previa', 'cdb-empleado' ); ?></h3>
+        <p><?php esc_html_e( 'Texto de ejemplo', 'cdb-empleado' ); ?></p>
+    </div>
 </div>
