@@ -43,82 +43,95 @@ function cdb_empleado_registrar_ajustes() {
 add_action( 'admin_init', 'cdb_empleado_registrar_ajustes' );
 
 /**
- * Registrar ajustes de estilos de la tarjeta.
+ * Registrar ajustes de la tarjeta de empleado.
  */
-function cdb_empleado_registrar_ajustes_estilos() {
-    register_setting( 'cdb_empleado_estilos', 'usar_tarjeta_oct', array(
+function cdb_empleado_registrar_ajustes_tarjeta() {
+    register_setting( 'cdb_empleado_tarjeta', 'usar_tarjeta_oct', array(
         'sanitize_callback' => 'cdb_empleado_sanitizar_checkbox',
         'default'           => 0,
     ) );
-    register_setting( 'cdb_empleado_estilos', 'tarjeta_oct_ink', array(
+    register_setting( 'cdb_empleado_tarjeta', 'tarjeta_oct_ink', array(
         'sanitize_callback' => 'sanitize_hex_color',
         'default'           => '#66604e',
     ) );
-    register_setting( 'cdb_empleado_estilos', 'tarjeta_oct_bg_start', array(
+    register_setting( 'cdb_empleado_tarjeta', 'tarjeta_oct_bg_start', array(
         'sanitize_callback' => 'sanitize_hex_color',
         'default'           => '#f5e8c8',
     ) );
-    register_setting( 'cdb_empleado_estilos', 'tarjeta_oct_bg_end', array(
+    register_setting( 'cdb_empleado_tarjeta', 'tarjeta_oct_bg_end', array(
         'sanitize_callback' => 'sanitize_hex_color',
         'default'           => '#efe1b4',
     ) );
-    register_setting( 'cdb_empleado_estilos', 'tarjeta_oct_font_body', array(
+    register_setting( 'cdb_empleado_tarjeta', 'tarjeta_oct_font_body', array(
         'sanitize_callback' => 'cdb_empleado_sanitizar_fuente',
         'default'           => 'sans',
     ) );
-    register_setting( 'cdb_empleado_estilos', 'tarjeta_oct_font_heading', array(
+    register_setting( 'cdb_empleado_tarjeta', 'tarjeta_oct_font_heading', array(
         'sanitize_callback' => 'cdb_empleado_sanitizar_fuente',
         'default'           => 'sans',
     ) );
 
+    register_setting( 'cdb_empleado_tarjeta', 'tarjeta_oct_bg_svg', array(
+        'sanitize_callback' => 'cdb_empleado_sanitizar_svg',
+        'default'           => cdb_empleado_default_bg_svg(),
+    ) );
+
     add_settings_section(
-        'cdb_empleado_estilos_section',
-        __( 'Tarjeta', 'cdb-empleado' ),
+        'cdb_empleado_tarjeta_section',
+        __( 'Tarjeta de Empleado', 'cdb-empleado' ),
         '__return_false',
-        'cdb-empleado-estilos'
+        'cdb-empleado-tarjeta'
     );
 
     add_settings_field(
         'usar_tarjeta_oct',
         __( 'Usar tarjeta octogonal', 'cdb-empleado' ),
         'cdb_empleado_campo_usar_tarjeta_oct',
-        'cdb-empleado-estilos',
-        'cdb_empleado_estilos_section'
+        'cdb-empleado-tarjeta',
+        'cdb_empleado_tarjeta_section'
     );
 
     add_settings_field(
         'tarjeta_oct_ink',
         __( 'Color de tinta', 'cdb-empleado' ),
         'cdb_empleado_campo_tarjeta_oct_ink',
-        'cdb-empleado-estilos',
-        'cdb_empleado_estilos_section'
+        'cdb-empleado-tarjeta',
+        'cdb_empleado_tarjeta_section'
     );
 
     add_settings_field(
         'tarjeta_oct_bg',
         __( 'Gradiente de fondo', 'cdb-empleado' ),
         'cdb_empleado_campo_tarjeta_oct_bg',
-        'cdb-empleado-estilos',
-        'cdb_empleado_estilos_section'
+        'cdb-empleado-tarjeta',
+        'cdb_empleado_tarjeta_section'
+    );
+
+    add_settings_field(
+        'tarjeta_oct_bg_svg',
+        __( 'SVG de fondo', 'cdb-empleado' ),
+        'cdb_empleado_campo_tarjeta_oct_bg_svg',
+        'cdb-empleado-tarjeta',
+        'cdb_empleado_tarjeta_section'
     );
 
     add_settings_field(
         'tarjeta_oct_font_body',
         __( 'Fuente principal', 'cdb-empleado' ),
         'cdb_empleado_campo_tarjeta_oct_font_body',
-        'cdb-empleado-estilos',
-        'cdb_empleado_estilos_section'
+        'cdb-empleado-tarjeta',
+        'cdb_empleado_tarjeta_section'
     );
 
     add_settings_field(
         'tarjeta_oct_font_heading',
         __( 'Fuente de encabezados', 'cdb-empleado' ),
         'cdb_empleado_campo_tarjeta_oct_font_heading',
-        'cdb-empleado-estilos',
-        'cdb_empleado_estilos_section'
+        'cdb-empleado-tarjeta',
+        'cdb_empleado_tarjeta_section'
     );
 }
-add_action( 'admin_init', 'cdb_empleado_registrar_ajustes_estilos' );
+add_action( 'admin_init', 'cdb_empleado_registrar_ajustes_tarjeta' );
 
 /**
  * Registrar ajustes de rendimiento.
@@ -330,6 +343,47 @@ function cdb_empleado_sanitizar_extra_data_fields( $valor ) {
 }
 
 /**
+ * Sanitizar SVG de fondo.
+ *
+ * @param string $svg Código SVG.
+ * @return string SVG filtrado.
+ */
+function cdb_empleado_sanitizar_svg( $svg ) {
+    $allowed            = wp_kses_allowed_html( 'post' );
+    $allowed['svg']     = array(
+        'xmlns' => true,
+        'viewBox' => true,
+        'width' => true,
+        'height' => true,
+        'fill' => true,
+        'preserveAspectRatio' => true,
+    );
+    $allowed['g']       = array(
+        'fill' => true,
+        'clip-path' => true,
+    );
+    $allowed['path']    = array(
+        'd' => true,
+        'fill' => true,
+        'fill-rule' => true,
+        'clip-rule' => true,
+        'stroke' => true,
+        'stroke-width' => true,
+    );
+    return wp_kses( $svg, $allowed );
+}
+
+/**
+ * Obtiene el SVG de fondo por defecto.
+ *
+ * @return string SVG por defecto.
+ */
+function cdb_empleado_default_bg_svg() {
+    $file = plugin_dir_path( __FILE__ ) . '../assets/svg/tarjeta-oct-bg.svg';
+    return file_exists( $file ) ? file_get_contents( $file ) : '';
+}
+
+/**
  * Campo checkbox para el ajuste inyectar_grafica.
  */
 function cdb_empleado_campo_inyectar_grafica() {
@@ -372,6 +426,15 @@ function cdb_empleado_campo_tarjeta_oct_bg() {
     echo '<input type="text" id="tarjeta_oct_bg_start" class="cdb-color-field" name="tarjeta_oct_bg_start" value="' . esc_attr( $ini ) . '" /> ';
     echo '<input type="text" id="tarjeta_oct_bg_end" class="cdb-color-field" name="tarjeta_oct_bg_end" value="' . esc_attr( $fin ) . '" />';
     echo '<p class="description">' . esc_html__( 'Colores de inicio y fin del gradiente.', 'cdb-empleado' ) . '</p>';
+}
+
+/**
+ * Campo textarea para SVG de fondo.
+ */
+function cdb_empleado_campo_tarjeta_oct_bg_svg() {
+    $valor = get_option( 'tarjeta_oct_bg_svg', cdb_empleado_default_bg_svg() );
+    echo '<textarea id="tarjeta_oct_bg_svg" name="tarjeta_oct_bg_svg" rows="5" class="large-text code">' . esc_textarea( $valor ) . '</textarea>';
+    echo '<p class="description">' . esc_html__( 'SVG que se usará como fondo de la tarjeta.', 'cdb-empleado' ) . '</p>';
 }
 
 /**
@@ -527,9 +590,9 @@ function cdb_empleado_get_submenus() {
             'capability' => 'edit_posts',
         ),
         array(
-            'slug'       => 'cdb-empleado-estilos',
-            'title'      => __( 'Estilos', 'cdb-empleado' ),
-            'callback'   => 'cdb_empleado_pagina_estilos',
+            'slug'       => 'cdb-empleado-tarjeta',
+            'title'      => __( 'Tarjeta de Empleado', 'cdb-empleado' ),
+            'callback'   => 'cdb_empleado_pagina_tarjeta',
             'capability' => 'manage_options',
         ),
         array(
@@ -601,10 +664,10 @@ function cdb_empleado_pagina_ajustes() {
 }
 
 /**
- * Render de la página de ajustes de estilos.
+ * Render de la página de ajustes de la tarjeta.
  */
-function cdb_empleado_pagina_estilos() {
-    include cdb_empleado_admin_template( 'estilos' );
+function cdb_empleado_pagina_tarjeta() {
+    include cdb_empleado_admin_template( 'tarjeta' );
 }
 
 /**
