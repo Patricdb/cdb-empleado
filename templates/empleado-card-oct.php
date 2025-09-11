@@ -19,11 +19,37 @@ if ( '' === $bg_svg ) {
 }
 
 $viewBox = '0 0 888 874';
-if ( preg_match( '/<svg[^>]*viewBox=["\']([^"\']+)["\']/i', $bg_svg, $m ) ) {
-    $viewBox = $m[1];
-}
 
-$bg_svg = preg_replace( '/<\/??svg[^>]*>/', '', $bg_svg );
+// Extrae el contenido interno del SVG y el atributo viewBox de forma robusta.
+if ( '' !== trim( $bg_svg ) ) {
+    $doc = new DOMDocument();
+    libxml_use_internal_errors( true );
+    $doc->loadXML( $bg_svg );
+    libxml_clear_errors();
+
+    $svgs = $doc->getElementsByTagName( 'svg' );
+    if ( $svgs->length > 0 ) {
+        $svg = $svgs->item( 0 );
+
+        // Obtiene el atributo viewBox sin importar mayúsculas/minúsculas.
+        foreach ( $svg->attributes as $attr ) {
+            if ( 0 === strcasecmp( $attr->nodeName, 'viewBox' ) ) {
+                $viewBox = $attr->nodeValue;
+                break;
+            }
+        }
+
+        // Serializa solamente los nodos hijos del SVG.
+        $inner = '';
+        foreach ( $svg->childNodes as $child ) {
+            $inner .= $doc->saveXML( $child );
+        }
+
+        $bg_svg = $inner;
+    }
+
+    libxml_use_internal_errors( false );
+}
 ?>
 
 <div class="cdb-empcard8" role="region" aria-labelledby="<?php echo esc_attr($card_id); ?>">
