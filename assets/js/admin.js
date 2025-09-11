@@ -38,18 +38,22 @@
         var $svgDisplay = $('#tarjeta_oct_bg_svg_display').hide();
         $('#tarjeta_oct_bg_svg_preview').on('click', function(){
             var svg = $('#tarjeta_oct_bg_svg').val().trim();
-            if(svg){
-                var doc = new DOMParser().parseFromString(svg, 'image/svg+xml');
-                var svgEl = doc.documentElement;
-                svgEl.removeAttribute('width');
-                svgEl.removeAttribute('height');
-                if(!svgEl.hasAttribute('preserveAspectRatio')){
-                    svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-                }
-                $svgDisplay.html(svgEl.outerHTML);
-            } else {
-                $svgDisplay.empty();
+            if(!svg){
+                $svgDisplay.empty().hide();
+                return;
             }
+            var doc = new DOMParser().parseFromString(svg, 'image/svg+xml');
+            if(doc.documentElement.tagName === 'parsererror'){
+                alert('El SVG proporcionado no es válido.');
+                return;
+            }
+            var svgEl = doc.documentElement;
+            svgEl.removeAttribute('width');
+            svgEl.removeAttribute('height');
+            if(!svgEl.hasAttribute('preserveAspectRatio')){
+                svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            }
+            $svgDisplay.html(svgEl.outerHTML);
             $svgDisplay.toggle();
             if($svgDisplay.is(':visible')){
                 $svgDisplay.css('display', 'flex');
