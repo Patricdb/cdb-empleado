@@ -50,6 +50,12 @@
             var svgEl = doc.documentElement;
             svgEl.removeAttribute('width');
             svgEl.removeAttribute('height');
+            if(!svgEl.hasAttribute('viewBox') && svgEl.hasAttribute('width') && svgEl.hasAttribute('height')){
+                var w = svgEl.getAttribute('width'), h = svgEl.getAttribute('height');
+                svgEl.setAttribute('viewBox', '0 0 '+w+' '+h);
+            }
+            svgEl.setAttribute('width', '100%');
+            svgEl.setAttribute('height', '100%');
             if(!svgEl.hasAttribute('preserveAspectRatio')){
                 svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
             }
