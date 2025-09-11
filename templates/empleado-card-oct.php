@@ -18,9 +18,10 @@ if ( '' === $bg_svg ) {
     $bg_svg = file_get_contents( plugin_dir_path( __FILE__ ) . '../assets/svg/tarjeta-oct-bg.svg' );
 }
 
-$viewBox = '0 0 888 874';
+$viewBox    = '0 0 888 874';
+$user_note  = '';
 
-// Extrae el contenido interno del SVG y el atributo viewBox de forma robusta.
+// Extrae el contenido interno del SVG y los atributos necesarios de forma robusta.
 if ( '' !== trim( $bg_svg ) ) {
     $doc = new DOMDocument();
     libxml_use_internal_errors( true );
@@ -29,14 +30,34 @@ if ( '' !== trim( $bg_svg ) ) {
 
     $svgs = $doc->getElementsByTagName( 'svg' );
     if ( $svgs->length > 0 ) {
-        $svg = $svgs->item( 0 );
+        $svg       = $svgs->item( 0 );
+        $vb_attr   = '';
+        $w_attr    = '';
+        $h_attr    = '';
 
-        // Obtiene el atributo viewBox sin importar mayúsculas/minúsculas.
+        // Obtiene atributos sin importar mayúsculas/minúsculas.
         foreach ( $svg->attributes as $attr ) {
             if ( 0 === strcasecmp( $attr->nodeName, 'viewBox' ) ) {
-                $viewBox = $attr->nodeValue;
-                break;
+                $vb_attr = $attr->nodeValue;
+            } elseif ( 0 === strcasecmp( $attr->nodeName, 'width' ) ) {
+                $w_attr = $attr->nodeValue;
+            } elseif ( 0 === strcasecmp( $attr->nodeName, 'height' ) ) {
+                $h_attr = $attr->nodeValue;
             }
+        }
+
+        if ( '' !== $vb_attr ) {
+            $viewBox = $vb_attr;
+        } elseif ( '' !== $w_attr && '' !== $h_attr ) {
+            $w = preg_replace( '/[^0-9.]/', '', $w_attr );
+            $h = preg_replace( '/[^0-9.]/', '', $h_attr );
+            if ( '' !== $w && '' !== $h ) {
+                $viewBox = "0 0 $w $h";
+            } else {
+                $user_note = esc_html__( 'Nota: el SVG necesita un viewBox definido.', 'cdb-empleado' );
+            }
+        } else {
+            $user_note = esc_html__( 'Nota: el SVG necesita un viewBox definido.', 'cdb-empleado' );
         }
 
         // Serializa solamente los nodos hijos del SVG.
@@ -69,4 +90,7 @@ if ( '' !== trim( $bg_svg ) ) {
     </g>
   </svg>
 </div>
+<?php if ( $user_note ) : ?>
+<!-- <?php echo $user_note; ?> -->
+<?php endif; ?>
 
