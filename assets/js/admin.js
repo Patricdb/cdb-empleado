@@ -21,6 +21,8 @@
         $preview.css({
             'color': ink,
             'background': bg,
+            'background-repeat': 'no-repeat',
+            'background-size': '100% 100%',
             'font-family': bodyStack
         });
         $preview.find('.cdb-preview-title').css('font-family', headStack);
