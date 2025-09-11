@@ -22,7 +22,8 @@
             'color': ink,
             'background': bg,
             'background-repeat': 'no-repeat',
-            'background-size': '100% 100%',
+            'background-size': 'contain',
+            'background-position': 'center',
             'font-family': bodyStack
         });
         $preview.find('.cdb-preview-title').css('font-family', headStack);
